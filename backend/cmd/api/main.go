@@ -14,6 +14,19 @@ import (
 	_ "github.com/lib/pq"
 )
 
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	dsn := fmt.Sprintf("host=127.0.0.1 port=5432 user=%s password=%s dbname=%s sslmode=disable",
 		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
@@ -29,22 +42,23 @@ func main() {
 	}
 	log.Println("DB接続成功")
 
-	problemRepo   := repository.NewProblemRepository(db)
-	progressRepo  := repository.NewProgressRepository(db)
+	problemRepo  := repository.NewProblemRepository(db)
+	progressRepo := repository.NewProgressRepository(db)
 
-	ph := handler.NewProblemHandler(problemRepo)
-	jh := handler.NewJudgeHandler(problemRepo, progressRepo, usecase.NewJudgeUsecase())
+	ph  := handler.NewProblemHandler(problemRepo)
+	jh  := handler.NewJudgeHandler(problemRepo, progressRepo, usecase.NewJudgeUsecase())
 	prh := handler.NewProgressHandler(progressRepo)
 
-	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 	})
-	http.HandleFunc("/api/problems", ph.GetProblems)
-	http.HandleFunc("/api/problems/", ph.GetProblemDetail)
-	http.HandleFunc("/api/judge", jh.Judge)
-	http.HandleFunc("/api/progress", prh.GetProgress)
+	mux.HandleFunc("/api/problems", ph.GetProblems)
+	mux.HandleFunc("/api/problems/", ph.GetProblemDetail)
+	mux.HandleFunc("/api/judge", jh.Judge)
+	mux.HandleFunc("/api/progress", prh.GetProgress)
 
 	log.Println("kufu:SQL API starting on :8080")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", corsMiddleware(mux)))
 }
