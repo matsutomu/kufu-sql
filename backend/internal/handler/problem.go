@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -18,9 +19,14 @@ func NewProblemHandler(repo *repository.ProblemRepository) *ProblemHandler {
 }
 
 func (h *ProblemHandler) GetProblems(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 	problems, err := h.repo.GetProblems()
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("GetProblems error: %v", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -28,16 +34,20 @@ func (h *ProblemHandler) GetProblems(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *ProblemHandler) GetProblemDetail(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
 	parts := strings.Split(r.URL.Path, "/")
 	id, err := strconv.Atoi(parts[len(parts)-1])
-	if err != nil {
+	if err != nil || id <= 0 {
 		http.Error(w, "invalid id", http.StatusBadRequest)
 		return
 	}
-
 	detail, err := h.repo.GetProblemDetail(id)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		log.Printf("GetProblemDetail error: %v", err)
+		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")

@@ -14,11 +14,28 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var allowedOrigins = []string{
+	"https://kufusql.sanpo-insight.com",
+	"http://localhost:5173",
+}
+
+func isAllowedOrigin(origin string) bool {
+	for _, o := range allowedOrigins {
+		if o == origin {
+			return true
+		}
+	}
+	return false
+}
+
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		origin := r.Header.Get("Origin")
+		if isAllowedOrigin(origin) {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		}
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
 			return
@@ -28,8 +45,16 @@ func corsMiddleware(next http.Handler) http.Handler {
 }
 
 func main() {
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+
+	if dbUser == "" || dbPassword == "" || dbName == "" {
+		log.Fatal("環境変数 DB_USER, DB_PASSWORD, DB_NAME が設定されていません")
+	}
+
 	dsn := fmt.Sprintf("host=127.0.0.1 port=5432 user=%s password=%s dbname=%s sslmode=disable",
-		os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
+		dbUser, dbPassword, dbName)
 
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
