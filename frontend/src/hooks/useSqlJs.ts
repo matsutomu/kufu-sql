@@ -1,6 +1,5 @@
+import type { Database, SqlJsStatic } from "sql.js";
 import { useEffect, useState, useCallback } from "react";
-import initSqlJs from "sql.js";
-import type { Database } from "sql.js";
 
 export type QueryResult = {
   columns: string[];
@@ -17,17 +16,24 @@ export function useSqlJs(ddl: string, seedData: string) {
     setLoading(true);
     setError(null);
 
-    initSqlJs({
-      locateFile: (file) => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${file}`,
-    })
-      .then((SQL) => {
-        const database = new SQL.Database();
+    const initDb = async () => {
+      try {
+        const sqlJs = await (window as any).initSqlJs({
+          locateFile: () =>
+            `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.wasm`,
+        });
+        const database = new sqlJs.Database();
         database.run(ddl);
         if (seedData) database.run(seedData);
         setDb(database);
-      })
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
+      } catch (e: any) {
+        setError(e.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initDb();
 
     return () => {
       setDb((prev) => {
@@ -44,7 +50,9 @@ export function useSqlJs(ddl: string, seedData: string) {
       if (results.length === 0) return { columns: [], rows: [] };
       const { columns, values } = results[0];
       const rows = values.map((row) =>
-        Object.fromEntries(columns.map((col, i) => [col, String(row[i] ?? "")]))
+        Object.fromEntries(
+          columns.map((col, i) => [col, String(row[i] ?? "")])
+        )
       );
       return { columns, rows };
     },
