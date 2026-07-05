@@ -1,4 +1,4 @@
-import type { Database, SqlJsStatic } from "sql.js";
+import type { Database } from "sql.js";
 import { useEffect, useState, useCallback } from "react";
 
 export type QueryResult = {
