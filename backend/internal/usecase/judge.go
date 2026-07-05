@@ -6,8 +6,9 @@ import (
 )
 
 type JudgeRequest struct {
-	ProblemID  int             `json:"problem_id"`
-	ResultRows []map[string]any `json:"result_rows"`
+	ProblemID   int              `json:"problem_id"`
+	SessionID   string           `json:"session_id"`
+	ResultRows  []map[string]any `json:"result_rows"`
 }
 
 type JudgeResponse struct {

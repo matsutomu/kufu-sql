@@ -29,9 +29,12 @@ func main() {
 	}
 	log.Println("DB接続成功")
 
-	repo := repository.NewProblemRepository(db)
-	ph := handler.NewProblemHandler(repo)
-	jh := handler.NewJudgeHandler(repo, usecase.NewJudgeUsecase())
+	problemRepo   := repository.NewProblemRepository(db)
+	progressRepo  := repository.NewProgressRepository(db)
+
+	ph := handler.NewProblemHandler(problemRepo)
+	jh := handler.NewJudgeHandler(problemRepo, progressRepo, usecase.NewJudgeUsecase())
+	prh := handler.NewProgressHandler(progressRepo)
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -40,6 +43,7 @@ func main() {
 	http.HandleFunc("/api/problems", ph.GetProblems)
 	http.HandleFunc("/api/problems/", ph.GetProblemDetail)
 	http.HandleFunc("/api/judge", jh.Judge)
+	http.HandleFunc("/api/progress", prh.GetProgress)
 
 	log.Println("kufu:SQL API starting on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))

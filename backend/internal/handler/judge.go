@@ -9,12 +9,13 @@ import (
 )
 
 type JudgeHandler struct {
-	repo    *repository.ProblemRepository
-	usecase *usecase.JudgeUsecase
+	repo        *repository.ProblemRepository
+	progressRepo *repository.ProgressRepository
+	usecase     *usecase.JudgeUsecase
 }
 
-func NewJudgeHandler(repo *repository.ProblemRepository, uc *usecase.JudgeUsecase) *JudgeHandler {
-	return &JudgeHandler{repo: repo, usecase: uc}
+func NewJudgeHandler(repo *repository.ProblemRepository, progressRepo *repository.ProgressRepository, uc *usecase.JudgeUsecase) *JudgeHandler {
+	return &JudgeHandler{repo: repo, progressRepo: progressRepo, usecase: uc}
 }
 
 func (h *JudgeHandler) Judge(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +37,11 @@ func (h *JudgeHandler) Judge(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := h.usecase.Judge(req, detail.Expected.ResultJSON, detail.Problem.Hint)
+
+	if req.SessionID != "" {
+		h.progressRepo.UpsertProgress(req.SessionID, req.ProblemID, res.IsCorrect)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(res)
 }
