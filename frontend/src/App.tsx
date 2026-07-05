@@ -14,8 +14,11 @@ const SESSION_ID = (() => {
 type Tab = "result" | "expected" | "hint";
 
 const CATEGORIES: Record<number, string> = {
-  1: "SELECT 基礎",
-  2: "集計・グループ化",
+  1: "Lv.1〜10 SQL基礎",
+  2: "Lv.11〜20 集計",
+  3: "Lv.21〜35 JOIN",
+  4: "Lv.36〜50 分析",
+  5: "Lv.51〜70 PostgreSQL実践",
 };
 
 export default function App() {
@@ -29,6 +32,7 @@ export default function App() {
   const [solvedIds, setSolvedIds]   = useState<Set<number>>(new Set());
   const [resultRows, setResultRows] = useState<Record<string,string>[]>([]);
   const [resultCols, setResultCols] = useState<string[]>([]);
+  const [apiDown, setApiDown]       = useState(false);
 
   const { loading: dbLoading, execute } = useSqlJs(
     detail?.schema.ddl ?? "",
@@ -36,7 +40,9 @@ export default function App() {
   );
 
   useEffect(() => {
-    fetchProblems().then(setProblems).catch(console.error);
+    fetchProblems()
+      .then((p) => { setProblems(p); setApiDown(false); })
+      .catch((e) => { console.error(e); setApiDown(true); });
   }, []);
 
   useEffect(() => {
@@ -139,7 +145,20 @@ export default function App() {
 
         {/* メインパネル */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          {!detail ? (
+          {apiDown ? (
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 20 }}>
+              <div style={{ fontSize: 52, lineHeight: 1 }}>🐱💤</div>
+              <div style={{ fontWeight: 700, fontSize: 17, color: "#333" }}>ただいまサービス時間外です</div>
+              <div style={{ fontSize: 13, color: "#888", textAlign: "center", lineHeight: 1.8 }}>
+                kufu:SQL はおやすみ中です。<br />
+                サービス時間内にまたお越しください。
+              </div>
+              <button onClick={() => location.reload()}
+                style={{ marginTop: 8, background: "#4a7c59", color: "#fff", border: "none", borderRadius: 6, padding: "7px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+                再読み込み
+              </button>
+            </div>
+          ) : !detail ? (
             <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "#aaa", fontSize: 14 }}>
               左のリストから問題を選んでください
             </div>
@@ -169,7 +188,7 @@ export default function App() {
                 </button>
               </div>
               <textarea value={sql} onChange={(e) => setSql(e.target.value)}
-                placeholder="SELECT * FROM employees;"
+                placeholder="SELECT * FROM customers;"
                 style={{ background: "#1e1e2e", color: "#cdd6f4", border: "none", outline: "none", padding: "12px 16px", fontSize: 13, fontFamily: "Courier New, monospace", resize: "none", minHeight: 110, lineHeight: 1.7, flexShrink: 0 }}
               />
 

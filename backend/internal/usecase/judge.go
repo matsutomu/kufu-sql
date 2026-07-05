@@ -3,12 +3,15 @@ package usecase
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
+	"strconv"
+	"strings"
 )
 
 type JudgeRequest struct {
-	ProblemID   int              `json:"problem_id"`
-	SessionID   string           `json:"session_id"`
-	ResultRows  []map[string]any `json:"result_rows"`
+	ProblemID  int              `json:"problem_id"`
+	SessionID  string           `json:"session_id"`
+	ResultRows []map[string]any `json:"result_rows"`
 }
 
 type JudgeResponse struct {
@@ -21,6 +24,16 @@ type JudgeUsecase struct{}
 
 func NewJudgeUsecase() *JudgeUsecase {
 	return &JudgeUsecase{}
+}
+
+// normalizeValue は値を比較用の文字列へ正規化する。
+// 数値は "410000.0" と "410000" のような表記ゆれを同一視する。
+func normalizeValue(v any) string {
+	s := fmt.Sprintf("%v", v)
+	if f, err := strconv.ParseFloat(strings.TrimSpace(s), 64); err == nil {
+		return strconv.FormatFloat(f, 'f', -1, 64)
+	}
+	return s
 }
 
 func (u *JudgeUsecase) Judge(req JudgeRequest, expectedJSON string, hint string) JudgeResponse {
@@ -39,19 +52,48 @@ func (u *JudgeUsecase) Judge(req JudgeRequest, expectedJSON string, hint string)
 
 	for i, expRow := range expected {
 		actRow := req.ResultRows[i]
+
+		// カラム名は大文字・小文字を区別せずに照合する
+		actByLower := make(map[string]any, len(actRow))
+		for k, v := range actRow {
+			actByLower[strings.ToLower(k)] = v
+		}
+
+		consumed := make(map[string]bool, len(actRow))
+		var unmatchedKeys []string
+		var unmatchedVals []string
 		for key, expVal := range expRow {
-			actVal, ok := actRow[key]
+			lower := strings.ToLower(key)
+			actVal, ok := actByLower[lower]
 			if !ok {
-				return JudgeResponse{
-					IsCorrect: false,
-					Message:   fmt.Sprintf("カラム '%s' が見つかりません", key),
-					Hint:      hint,
-				}
+				// COUNT(*) と COUNT(id) のように列名が一致しない場合は後で値同士を照合する
+				unmatchedKeys = append(unmatchedKeys, key)
+				unmatchedVals = append(unmatchedVals, normalizeValue(expVal))
+				continue
 			}
-			if fmt.Sprintf("%v", expVal) != fmt.Sprintf("%v", actVal) {
+			consumed[lower] = true
+			if normalizeValue(expVal) != normalizeValue(actVal) {
 				return JudgeResponse{
 					IsCorrect: false,
 					Message:   fmt.Sprintf("値が異なります（カラム: %s）", key),
+					Hint:      hint,
+				}
+			}
+		}
+
+		if len(unmatchedKeys) > 0 {
+			var leftover []string
+			for k, v := range actByLower {
+				if !consumed[k] {
+					leftover = append(leftover, normalizeValue(v))
+				}
+			}
+			slices.Sort(unmatchedVals)
+			slices.Sort(leftover)
+			if !slices.Equal(unmatchedVals, leftover) {
+				return JudgeResponse{
+					IsCorrect: false,
+					Message:   fmt.Sprintf("値が異なります（カラム: %s）", strings.Join(unmatchedKeys, ", ")),
 					Hint:      hint,
 				}
 			}
