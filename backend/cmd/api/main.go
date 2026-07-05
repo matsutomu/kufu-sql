@@ -10,6 +10,7 @@ import (
 
 	"github.com/matsutomu/kufu-sql/backend/internal/handler"
 	"github.com/matsutomu/kufu-sql/backend/internal/repository"
+	"github.com/matsutomu/kufu-sql/backend/internal/usecase"
 	_ "github.com/lib/pq"
 )
 
@@ -30,6 +31,7 @@ func main() {
 
 	repo := repository.NewProblemRepository(db)
 	ph := handler.NewProblemHandler(repo)
+	jh := handler.NewJudgeHandler(repo, usecase.NewJudgeUsecase())
 
 	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -37,6 +39,7 @@ func main() {
 	})
 	http.HandleFunc("/api/problems", ph.GetProblems)
 	http.HandleFunc("/api/problems/", ph.GetProblemDetail)
+	http.HandleFunc("/api/judge", jh.Judge)
 
 	log.Println("kufu:SQL API starting on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
