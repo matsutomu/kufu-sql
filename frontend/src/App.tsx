@@ -133,7 +133,7 @@ export default function App() {
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* サイドバー */}
-        <div style={{ width: 230, background: C.sidebarBg, borderRight: `1px solid ${C.border}`, overflowY: "auto", padding: "12px 10px", flexShrink: 0 }}>
+        <div style={{ width: 260, background: C.sidebarBg, borderRight: `1px solid ${C.border}`, overflowY: "auto", padding: "12px 10px", flexShrink: 0 }}>
 
           {/* はじめに（シナリオ紹介） */}
           <div
