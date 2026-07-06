@@ -44,6 +44,16 @@ export default function App() {
   const [resultRows, setResultRows] = useState<Record<string,string>[]>([]);
   const [resultCols, setResultCols] = useState<string[]>([]);
   const [apiDown, setApiDown]       = useState(false);
+  // 閉じているカテゴリのID（初期状態は全カテゴリ開いた状態）
+  const [closedCats, setClosedCats] = useState<Set<number>>(new Set());
+
+  const toggleCategory = (catId: number) => {
+    setClosedCats((prev) => {
+      const next = new Set(prev);
+      if (next.has(catId)) next.delete(catId); else next.add(catId);
+      return next;
+    });
+  };
 
   const { loading: dbLoading, execute } = useSqlJs(
     detail?.schema.ddl ?? "",
@@ -151,12 +161,19 @@ export default function App() {
           </div>
 
           {/* カテゴリ別問題一覧 */}
-          {Object.entries(grouped).map(([catId, probs]) => (
+          {Object.entries(grouped).map(([catId, probs]) => {
+            const isOpen = !closedCats.has(Number(catId));
+            const catSolved = probs.filter((p) => solvedIds.has(p.id)).length;
+            return (
             <div key={catId} style={{ marginBottom: 12 }}>
-              <div style={{ fontSize: 10, fontWeight: 700, color: "#8fa3c0", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5, paddingLeft: 4 }}>
-                {CATEGORIES[Number(catId)] ?? `カテゴリ${catId}`}
+              <div
+                onClick={() => toggleCategory(Number(catId))}
+                style={{ fontSize: 10, fontWeight: 700, color: "#8fa3c0", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5, paddingLeft: 4, cursor: "pointer", userSelect: "none", display: "flex", alignItems: "center", gap: 4 }}>
+                <span style={{ display: "inline-block", transition: "transform 0.15s", transform: isOpen ? "rotate(90deg)" : "rotate(0deg)", fontSize: 8 }}>▶</span>
+                <span style={{ flex: 1 }}>{CATEGORIES[Number(catId)] ?? `カテゴリ${catId}`}</span>
+                {!isOpen && <span style={{ fontWeight: 400 }}>{catSolved}/{probs.length}</span>}
               </div>
-              {probs.map((p) => (
+              {isOpen && probs.map((p) => (
                 <div key={p.id}
                   onClick={() => setSelected(p.id)}
                   title={p.title}
@@ -174,7 +191,8 @@ export default function App() {
                 </div>
               ))}
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* メインパネル */}
