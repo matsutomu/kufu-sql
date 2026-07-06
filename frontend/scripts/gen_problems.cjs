@@ -1,7 +1,7 @@
 /**
  * Kufu Cloud 問題セット生成スクリプト
  * 正解SQLをフロントと同じ sql.js で実行して result_json を生成し、
- * backend/migrations/005_kufu_cloud_problems.sql を出力する。
+ * backend/migrations/002_kufu_cloud_problems.sql を出力する。
  */
 const path = require("path");
 const fs = require("fs");
@@ -926,7 +926,7 @@ async function main() {
     console.error(`\n${fail}問でエラー。マイグレーションは出力しません。`);
     process.exit(1);
   }
-  const dest = path.join(__dirname, "../../backend/migrations/005_kufu_cloud_problems.sql");
+  const dest = path.join(__dirname, "../../backend/migrations/002_kufu_cloud_problems.sql");
   fs.writeFileSync(dest, out.join("\n"));
   console.log(`\n📄 ${dest} を出力しました（${P.length}問）`);
 }

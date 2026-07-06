@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"strconv"
@@ -46,6 +48,10 @@ func (h *ProblemHandler) GetProblemDetail(w http.ResponseWriter, r *http.Request
 	}
 	detail, err := h.repo.GetProblemDetail(id)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "problem not found", http.StatusNotFound)
+			return
+		}
 		log.Printf("GetProblemDetail error: %v", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return

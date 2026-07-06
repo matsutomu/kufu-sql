@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"database/sql"
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"strings"
@@ -48,6 +50,10 @@ func (h *JudgeHandler) Judge(w http.ResponseWriter, r *http.Request) {
 
 	detail, err := h.repo.GetProblemDetail(req.ProblemID)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "problem not found", http.StatusNotFound)
+			return
+		}
 		log.Printf("Judge GetProblemDetail error: %v", err)
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return

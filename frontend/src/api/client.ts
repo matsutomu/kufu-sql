@@ -59,7 +59,7 @@ export async function judge(
 }
 
 export async function fetchProgress(sessionId: string): Promise<ProgressItem[]> {
-  const res = await fetch(`${BASE_URL}/api/progress?session_id=${sessionId}`);
+  const res = await fetch(`${BASE_URL}/api/progress?session_id=${encodeURIComponent(sessionId)}`);
   if (!res.ok) throw new Error("進捗の取得に失敗しました");
   return res.json();
 }

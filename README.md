@@ -100,7 +100,7 @@ aws s3 cp infra/s3/maintenance.html s3://<S3バケット名>/
 
 ```bash
 cd frontend
-node scripts/gen_problems.cjs   # → backend/migrations/005_kufu_cloud_problems.sql を再生成
+node scripts/gen_problems.cjs   # → backend/migrations/002_kufu_cloud_problems.sql を再生成
 ```
 
 ## ライセンス

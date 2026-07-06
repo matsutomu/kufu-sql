@@ -30,6 +30,8 @@ func isAllowedOrigin(origin string) bool {
 
 func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Allow-Originの値がOriginごとに変わるため、中間キャッシュの誤共有を防ぐ
+		w.Header().Set("Vary", "Origin")
 		origin := r.Header.Get("Origin")
 		if isAllowedOrigin(origin) {
 			w.Header().Set("Access-Control-Allow-Origin", origin)
