@@ -347,6 +347,10 @@ function ScenarioIntro({ onStart }: { onStart: () => void }) {
           style={{ background: C.primary, color: "#fff", border: "none", borderRadius: 8, padding: "11px 28px", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
           Lv.1 から始める →
         </button>
+
+        <p style={{ fontSize: 11, color: "#aaa", marginTop: 24, lineHeight: 1.7 }}>
+          ※ 本サービスに登場する企業・人物・データはすべて架空のものであり、実在の企業・団体・人物とは一切関係ありません。
+        </p>
       </div>
     </div>
   );

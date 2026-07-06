@@ -76,20 +76,20 @@ const DDL = {
 const SEED = {
   customers: [
     `INSERT INTO customers VALUES (1,'株式会社アオゾラ商事','卸売',120,'2024-04-01');`,
-    `INSERT INTO customers VALUES (2,'テックフォワード株式会社','IT',45,'2024-06-15');`,
+    `INSERT INTO customers VALUES (2,'ソラウミ技研株式会社','IT',45,'2024-06-15');`,
     `INSERT INTO customers VALUES (3,'株式会社みなと製作所','製造',300,'2024-09-01');`,
     `INSERT INTO customers VALUES (4,'グリーンリーフ株式会社','小売',80,'2025-01-20');`,
     `INSERT INTO customers VALUES (5,'株式会社ホシノ物流','物流',150,'2025-03-10');`,
     `INSERT INTO customers VALUES (6,'サクラ会計事務所','士業',12,'2025-05-01');`,
     `INSERT INTO customers VALUES (7,'株式会社ヤマビコ建設','建設',210,'2025-08-18');`,
-    `INSERT INTO customers VALUES (8,'リバーサイド株式会社','IT',25,'2026-01-09');`,
+    `INSERT INTO customers VALUES (8,'アマオト株式会社','IT',25,'2026-01-09');`,
   ],
   users: [
     `INSERT INTO users VALUES (1,1,'田島 圭介','k.tajima@aozora.example.jp','営業','active','2024-04-05');`,
     `INSERT INTO users VALUES (2,1,'森本 由紀','y.morimoto@aozora.example.jp','経理','active','2024-04-06');`,
     `INSERT INTO users VALUES (3,1,'小野 拓','t.ono@aozora.example.jp','営業','inactive','2024-05-10');`,
-    `INSERT INTO users VALUES (4,2,'藤井 彩','a.fujii@techforward.example.jp','開発','active','2024-06-20');`,
-    `INSERT INTO users VALUES (5,2,'中山 蓮','r.nakayama@techforward.example.jp','開発','active','2024-07-01');`,
+    `INSERT INTO users VALUES (4,2,'藤井 彩','a.fujii@soraumi.example.jp','開発','active','2024-06-20');`,
+    `INSERT INTO users VALUES (5,2,'中山 蓮','r.nakayama@soraumi.example.jp','開発','active','2024-07-01');`,
     `INSERT INTO users VALUES (6,3,'石田 廉','r.ishida@minato.example.jp','生産管理','active','2024-09-05');`,
     `INSERT INTO users VALUES (7,3,'大森 早紀','s.omori@minato.example.jp','経理','active','2024-09-06');`,
     `INSERT INTO users VALUES (8,3,'神谷 亮','r.kamiya@minato.example.jp','営業','inactive','2025-02-14');`,
@@ -98,7 +98,7 @@ const SEED = {
     `INSERT INTO users VALUES (11,5,'白石 楓','k.shiraishi@hoshino.example.jp','経理','active','2025-04-01');`,
     `INSERT INTO users VALUES (12,6,'桜井 誠','m.sakurai@sakura.example.jp','会計','active','2025-05-02');`,
     `INSERT INTO users VALUES (13,7,'高村 直人','n.takamura@yamabiko.example.jp','営業','active','2025-08-20');`,
-    `INSERT INTO users VALUES (14,8,'井上 千夏','c.inoue@riverside.example.jp','開発','active','2026-01-12');`,
+    `INSERT INTO users VALUES (14,8,'井上 千夏','c.inoue@amaoto.example.jp','開発','active','2026-01-12');`,
   ],
   plans: [
     `INSERT INTO plans VALUES (1,'Free',0);`,
@@ -858,6 +858,92 @@ ORDER BY mrr DESC`);
 // ---------------------------------------------------------------
 const esc = (s) => String(s).replace(/'/g, "''");
 
+// ---------------------------------------------------------------
+// 生成後の検証（問題があっても警告表示のみで、生成自体は失敗させない）
+// ---------------------------------------------------------------
+
+// hintへの漏れをチェックする主要SQLキーワード（テーブル名・SELECT/FROM/WHEREなどの必須語は除く）
+const HINT_CHECK_KEYWORDS = [
+  // 句
+  "GROUP BY", "ORDER BY", "PARTITION BY", "ROWS BETWEEN",
+  "INNER JOIN", "LEFT JOIN", "HAVING", "LIMIT", "DISTINCT",
+  "UNION", "CASE", "EXISTS", "NOT IN", "LIKE", "FILTER", "OVER", "WITH",
+  // 関数
+  "COUNT", "SUM", "AVG", "MAX", "MIN", "ROUND",
+  "ROW_NUMBER", "RANK", "NTILE", "LAG", "LEAD", "FIRST_VALUE",
+  "strftime", "json_object",
+];
+
+const DIFF_RANK = { easy: 1, medium: 2, hard: 3 };
+
+function validateProblems(generated) {
+  const warnings = [];
+
+  // 1) answer_sql の完全重複チェック（空白の差だけの実質重複も拾う）
+  const seenSql = new Map();
+  for (const g of generated) {
+    const key = g.sql.replace(/\s+/g, " ").trim().toLowerCase();
+    if (seenSql.has(key)) {
+      warnings.push(`[重複SQL] Lv.${g.id} の answer_sql が Lv.${seenSql.get(key)} と完全に重複しています`);
+    } else {
+      seenSql.set(key, g.id);
+    }
+  }
+
+  // 2) hint に answer_sql の主要キーワードがそのまま含まれていないかチェック
+  for (const g of generated) {
+    const leaked = HINT_CHECK_KEYWORDS.filter((kw) => {
+      const re = new RegExp(`\\b${kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "i");
+      return re.test(g.sql) && re.test(g.hint);
+    });
+    if (leaked.length > 0) {
+      warnings.push(`[ヒント漏れ] Lv.${g.id}: hint に answer_sql のキーワードが含まれています → ${leaked.join(", ")}`);
+    }
+  }
+
+  // 3) カテゴリ内の難易度がsort_order順で不自然にジグザグしていないかチェック
+  //    （前後より高い「山」または低い「谷」になっている箇所を疑わしいとみなす）
+  const byCat = new Map();
+  for (const g of generated) {
+    if (!byCat.has(g.cat)) byCat.set(g.cat, []);
+    byCat.get(g.cat).push(g); // generated は挿入順 = sort_order 順
+  }
+  for (const [cat, list] of byCat) {
+    for (let i = 1; i < list.length - 1; i++) {
+      const a = DIFF_RANK[list[i - 1].diff];
+      const b = DIFF_RANK[list[i].diff];
+      const c = DIFF_RANK[list[i + 1].diff];
+      if ((b > a && b > c) || (b < a && b < c)) {
+        warnings.push(
+          `[難易度ジグザグ] カテゴリ${cat}: Lv.${list[i - 1].id}(${list[i - 1].diff}) → Lv.${list[i].id}(${list[i].diff}) → Lv.${list[i + 1].id}(${list[i + 1].diff}) の並びが不自然です`
+        );
+      }
+    }
+  }
+
+  // 4) result_json が空配列（0件ヒット）になっていないかチェック
+  for (const g of generated) {
+    let rows;
+    try {
+      rows = JSON.parse(g.resultJson);
+    } catch (e) {
+      warnings.push(`[JSON不正] Lv.${g.id}: result_json がパースできません（${e.message}）`);
+      continue;
+    }
+    if (!Array.isArray(rows) || rows.length === 0) {
+      warnings.push(`[結果0件] Lv.${g.id}: result_json が空です（意図しない0件ヒットの可能性）`);
+    }
+  }
+
+  console.log(`\n🔍 検証: ${generated.length}問をチェックしました`);
+  if (warnings.length === 0) {
+    console.log("✅ 検証OK: 問題は見つかりませんでした");
+  } else {
+    console.warn(`⚠ 検証で ${warnings.length} 件の警告があります:`);
+    for (const w of warnings) console.warn(`  - ${w}`);
+  }
+}
+
 async function main() {
   const SQL = await initSqlJs();
   const out = [];
@@ -876,6 +962,7 @@ async function main() {
   out.push(``);
 
   const sortCounters = {};
+  const generated = []; // 検証用に生成結果を保持
   let fail = 0;
   for (const p of P) {
     const ddl = p.tables.map((t) => DDL[t]).join("\n\n");
@@ -906,6 +993,7 @@ async function main() {
 
     sortCounters[p.cat] = (sortCounters[p.cat] ?? 0) + 1;
     const resultJson = JSON.stringify(rows);
+    generated.push({ id: p.id, cat: p.cat, diff: p.diff, hint: p.hint, sql: p.sql, resultJson });
 
     out.push(`-- ${p.title}`);
     out.push(`INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES`);
@@ -929,6 +1017,8 @@ async function main() {
   const dest = path.join(__dirname, "../../backend/migrations/002_kufu_cloud_problems.sql");
   fs.writeFileSync(dest, out.join("\n"));
   console.log(`\n📄 ${dest} を出力しました（${P.length}問）`);
+
+  validateProblems(generated);
 }
 
 main();

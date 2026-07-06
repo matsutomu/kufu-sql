@@ -24,15 +24,15 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
-  (1, 'SELECT * FROM customers', '[{"id":"1","company_name":"株式会社アオゾラ商事","industry":"卸売","employee_count":"120","created_at":"2024-04-01"},{"id":"2","company_name":"テックフォワード株式会社","industry":"IT","employee_count":"45","created_at":"2024-06-15"},{"id":"3","company_name":"株式会社みなと製作所","industry":"製造","employee_count":"300","created_at":"2024-09-01"},{"id":"4","company_name":"グリーンリーフ株式会社","industry":"小売","employee_count":"80","created_at":"2025-01-20"},{"id":"5","company_name":"株式会社ホシノ物流","industry":"物流","employee_count":"150","created_at":"2025-03-10"},{"id":"6","company_name":"サクラ会計事務所","industry":"士業","employee_count":"12","created_at":"2025-05-01"},{"id":"7","company_name":"株式会社ヤマビコ建設","industry":"建設","employee_count":"210","created_at":"2025-08-18"},{"id":"8","company_name":"リバーサイド株式会社","industry":"IT","employee_count":"25","created_at":"2026-01-09"}]');
+  (1, 'SELECT * FROM customers', '[{"id":"1","company_name":"株式会社アオゾラ商事","industry":"卸売","employee_count":"120","created_at":"2024-04-01"},{"id":"2","company_name":"ソラウミ技研株式会社","industry":"IT","employee_count":"45","created_at":"2024-06-15"},{"id":"3","company_name":"株式会社みなと製作所","industry":"製造","employee_count":"300","created_at":"2024-09-01"},{"id":"4","company_name":"グリーンリーフ株式会社","industry":"小売","employee_count":"80","created_at":"2025-01-20"},{"id":"5","company_name":"株式会社ホシノ物流","industry":"物流","employee_count":"150","created_at":"2025-03-10"},{"id":"6","company_name":"サクラ会計事務所","industry":"士業","employee_count":"12","created_at":"2025-05-01"},{"id":"7","company_name":"株式会社ヤマビコ建設","industry":"建設","employee_count":"210","created_at":"2025-08-18"},{"id":"8","company_name":"アマオト株式会社","industry":"IT","employee_count":"25","created_at":"2026-01-09"}]');
 
 -- Lv.2 企業名と業界だけの一覧
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -45,15 +45,15 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
-  (2, 'SELECT company_name, industry FROM customers', '[{"company_name":"株式会社アオゾラ商事","industry":"卸売"},{"company_name":"テックフォワード株式会社","industry":"IT"},{"company_name":"株式会社みなと製作所","industry":"製造"},{"company_name":"グリーンリーフ株式会社","industry":"小売"},{"company_name":"株式会社ホシノ物流","industry":"物流"},{"company_name":"サクラ会計事務所","industry":"士業"},{"company_name":"株式会社ヤマビコ建設","industry":"建設"},{"company_name":"リバーサイド株式会社","industry":"IT"}]');
+  (2, 'SELECT company_name, industry FROM customers', '[{"company_name":"株式会社アオゾラ商事","industry":"卸売"},{"company_name":"ソラウミ技研株式会社","industry":"IT"},{"company_name":"株式会社みなと製作所","industry":"製造"},{"company_name":"グリーンリーフ株式会社","industry":"小売"},{"company_name":"株式会社ホシノ物流","industry":"物流"},{"company_name":"サクラ会計事務所","industry":"士業"},{"company_name":"株式会社ヤマビコ建設","industry":"建設"},{"company_name":"アマオト株式会社","industry":"IT"}]');
 
 -- Lv.3 IT業界の企業を探す
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -66,15 +66,15 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
-  (3, 'SELECT * FROM customers WHERE industry = ''IT''', '[{"id":"2","company_name":"テックフォワード株式会社","industry":"IT","employee_count":"45","created_at":"2024-06-15"},{"id":"8","company_name":"リバーサイド株式会社","industry":"IT","employee_count":"25","created_at":"2026-01-09"}]');
+  (3, 'SELECT * FROM customers WHERE industry = ''IT''', '[{"id":"2","company_name":"ソラウミ技研株式会社","industry":"IT","employee_count":"45","created_at":"2024-06-15"},{"id":"8","company_name":"アマオト株式会社","industry":"IT","employee_count":"25","created_at":"2026-01-09"}]');
 
 -- Lv.4 大口顧客の候補を絞り込む
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -87,13 +87,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (4, 'SELECT * FROM customers WHERE employee_count >= 100', '[{"id":"1","company_name":"株式会社アオゾラ商事","industry":"卸売","employee_count":"120","created_at":"2024-04-01"},{"id":"3","company_name":"株式会社みなと製作所","industry":"製造","employee_count":"300","created_at":"2024-09-01"},{"id":"5","company_name":"株式会社ホシノ物流","industry":"物流","employee_count":"150","created_at":"2025-03-10"},{"id":"7","company_name":"株式会社ヤマビコ建設","industry":"建設","employee_count":"210","created_at":"2025-08-18"}]');
 
@@ -108,13 +108,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (5, 'SELECT company_name FROM customers WHERE company_name LIKE ''株式会社%'' ORDER BY id', '[{"company_name":"株式会社アオゾラ商事"},{"company_name":"株式会社みなと製作所"},{"company_name":"株式会社ホシノ物流"},{"company_name":"株式会社ヤマビコ建設"}]');
 
@@ -129,15 +129,15 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
-  (6, 'SELECT company_name, created_at FROM customers ORDER BY created_at DESC', '[{"company_name":"リバーサイド株式会社","created_at":"2026-01-09"},{"company_name":"株式会社ヤマビコ建設","created_at":"2025-08-18"},{"company_name":"サクラ会計事務所","created_at":"2025-05-01"},{"company_name":"株式会社ホシノ物流","created_at":"2025-03-10"},{"company_name":"グリーンリーフ株式会社","created_at":"2025-01-20"},{"company_name":"株式会社みなと製作所","created_at":"2024-09-01"},{"company_name":"テックフォワード株式会社","created_at":"2024-06-15"},{"company_name":"株式会社アオゾラ商事","created_at":"2024-04-01"}]');
+  (6, 'SELECT company_name, created_at FROM customers ORDER BY created_at DESC', '[{"company_name":"アマオト株式会社","created_at":"2026-01-09"},{"company_name":"株式会社ヤマビコ建設","created_at":"2025-08-18"},{"company_name":"サクラ会計事務所","created_at":"2025-05-01"},{"company_name":"株式会社ホシノ物流","created_at":"2025-03-10"},{"company_name":"グリーンリーフ株式会社","created_at":"2025-01-20"},{"company_name":"株式会社みなと製作所","created_at":"2024-09-01"},{"company_name":"ソラウミ技研株式会社","created_at":"2024-06-15"},{"company_name":"株式会社アオゾラ商事","created_at":"2024-04-01"}]');
 
 -- Lv.7 料金プランを安い順に
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -165,13 +165,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (8, 'SELECT company_name, employee_count FROM customers ORDER BY employee_count DESC LIMIT 3', '[{"company_name":"株式会社みなと製作所","employee_count":"300"},{"company_name":"株式会社ヤマビコ建設","employee_count":"210"},{"company_name":"株式会社ホシノ物流","employee_count":"150"}]');
 
@@ -186,15 +186,15 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
-  (9, 'SELECT company_name, employee_count FROM customers WHERE industry = ''IT'' AND employee_count < 50 ORDER BY id', '[{"company_name":"テックフォワード株式会社","employee_count":"45"},{"company_name":"リバーサイド株式会社","employee_count":"25"}]');
+  (9, 'SELECT company_name, employee_count FROM customers WHERE industry = ''IT'' AND employee_count < 50 ORDER BY id', '[{"company_name":"ソラウミ技研株式会社","employee_count":"45"},{"company_name":"アマオト株式会社","employee_count":"25"}]');
 
 -- Lv.10 一番安い有料プランはどれ？
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -222,13 +222,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (11, 'SELECT COUNT(*) FROM customers', '[{"COUNT(*)":"8"}]');
 
@@ -247,8 +247,8 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
 );', 'INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -257,7 +257,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (12, 'SELECT COUNT(*) FROM users WHERE status = ''active''', '[{"COUNT(*)":"12"}]');
 
@@ -296,13 +296,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (14, 'SELECT AVG(employee_count) AS avg_employees FROM customers', '[{"avg_employees":"117.75"}]');
 
@@ -317,13 +317,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (15, 'SELECT MAX(employee_count) AS max_employees, MIN(employee_count) AS min_employees FROM customers', '[{"max_employees":"300","min_employees":"12"}]');
 
@@ -338,13 +338,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (16, 'SELECT industry, COUNT(*) AS company_count FROM customers GROUP BY industry ORDER BY industry', '[{"industry":"IT","company_count":"2"},{"industry":"卸売","company_count":"1"},{"industry":"士業","company_count":"1"},{"industry":"小売","company_count":"1"},{"industry":"建設","company_count":"1"},{"industry":"物流","company_count":"1"},{"industry":"製造","company_count":"1"}]');
 
@@ -363,8 +363,8 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
 );', 'INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -373,7 +373,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (17, 'SELECT department, COUNT(*) AS user_count FROM users GROUP BY department ORDER BY department', '[{"department":"人事","user_count":"1"},{"department":"会計","user_count":"1"},{"department":"営業","user_count":"4"},{"department":"物流企画","user_count":"1"},{"department":"生産管理","user_count":"1"},{"department":"経理","user_count":"3"},{"department":"開発","user_count":"3"}]');
 
@@ -472,8 +472,8 @@ CREATE TABLE customers (
 );', 'INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -482,20 +482,20 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (21, 'SELECT u.id, u.name, c.company_name
 FROM users u
 INNER JOIN customers c ON u.customer_id = c.id
-ORDER BY u.id', '[{"id":"1","name":"田島 圭介","company_name":"株式会社アオゾラ商事"},{"id":"2","name":"森本 由紀","company_name":"株式会社アオゾラ商事"},{"id":"3","name":"小野 拓","company_name":"株式会社アオゾラ商事"},{"id":"4","name":"藤井 彩","company_name":"テックフォワード株式会社"},{"id":"5","name":"中山 蓮","company_name":"テックフォワード株式会社"},{"id":"6","name":"石田 廉","company_name":"株式会社みなと製作所"},{"id":"7","name":"大森 早紀","company_name":"株式会社みなと製作所"},{"id":"8","name":"神谷 亮","company_name":"株式会社みなと製作所"},{"id":"9","name":"横川 芽衣","company_name":"グリーンリーフ株式会社"},{"id":"10","name":"三浦 大地","company_name":"株式会社ホシノ物流"},{"id":"11","name":"白石 楓","company_name":"株式会社ホシノ物流"},{"id":"12","name":"桜井 誠","company_name":"サクラ会計事務所"},{"id":"13","name":"高村 直人","company_name":"株式会社ヤマビコ建設"},{"id":"14","name":"井上 千夏","company_name":"リバーサイド株式会社"}]');
+ORDER BY u.id', '[{"id":"1","name":"田島 圭介","company_name":"株式会社アオゾラ商事"},{"id":"2","name":"森本 由紀","company_name":"株式会社アオゾラ商事"},{"id":"3","name":"小野 拓","company_name":"株式会社アオゾラ商事"},{"id":"4","name":"藤井 彩","company_name":"ソラウミ技研株式会社"},{"id":"5","name":"中山 蓮","company_name":"ソラウミ技研株式会社"},{"id":"6","name":"石田 廉","company_name":"株式会社みなと製作所"},{"id":"7","name":"大森 早紀","company_name":"株式会社みなと製作所"},{"id":"8","name":"神谷 亮","company_name":"株式会社みなと製作所"},{"id":"9","name":"横川 芽衣","company_name":"グリーンリーフ株式会社"},{"id":"10","name":"三浦 大地","company_name":"株式会社ホシノ物流"},{"id":"11","name":"白石 楓","company_name":"株式会社ホシノ物流"},{"id":"12","name":"桜井 誠","company_name":"サクラ会計事務所"},{"id":"13","name":"高村 直人","company_name":"株式会社ヤマビコ建設"},{"id":"14","name":"井上 千夏","company_name":"アマオト株式会社"}]');
 
 -- Lv.22 契約一覧にプラン名を付ける
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -570,13 +570,13 @@ INSERT INTO subscriptions VALUES (8,6,1,''active'',''2025-05-01'',NULL);
 INSERT INTO subscriptions VALUES (9,7,2,''canceled'',''2025-08-18'',''2026-02-28'');
 INSERT INTO subscriptions VALUES (10,8,2,''trial'',''2026-01-09'',NULL);
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO plans VALUES (1,''Free'',0);
 INSERT INTO plans VALUES (2,''Starter'',9800);
 INSERT INTO plans VALUES (3,''Business'',29800);
@@ -587,7 +587,7 @@ FROM subscriptions s
 INNER JOIN customers c ON s.customer_id = c.id
 INNER JOIN plans p ON s.plan_id = p.id
 WHERE s.status = ''active''
-ORDER BY c.company_name', '[{"company_name":"グリーンリーフ株式会社","plan_name":"Business"},{"company_name":"サクラ会計事務所","plan_name":"Free"},{"company_name":"テックフォワード株式会社","plan_name":"Starter"},{"company_name":"株式会社みなと製作所","plan_name":"Enterprise"},{"company_name":"株式会社アオゾラ商事","plan_name":"Business"},{"company_name":"株式会社ホシノ物流","plan_name":"Business"}]');
+ORDER BY c.company_name', '[{"company_name":"グリーンリーフ株式会社","plan_name":"Business"},{"company_name":"サクラ会計事務所","plan_name":"Free"},{"company_name":"ソラウミ技研株式会社","plan_name":"Starter"},{"company_name":"株式会社みなと製作所","plan_name":"Enterprise"},{"company_name":"株式会社アオゾラ商事","plan_name":"Business"},{"company_name":"株式会社ホシノ物流","plan_name":"Business"}]');
 
 -- Lv.24 Businessプランの契約企業
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -625,13 +625,13 @@ INSERT INTO subscriptions VALUES (8,6,1,''active'',''2025-05-01'',NULL);
 INSERT INTO subscriptions VALUES (9,7,2,''canceled'',''2025-08-18'',''2026-02-28'');
 INSERT INTO subscriptions VALUES (10,8,2,''trial'',''2026-01-09'',NULL);
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO plans VALUES (1,''Free'',0);
 INSERT INTO plans VALUES (2,''Starter'',9800);
 INSERT INTO plans VALUES (3,''Business'',29800);
@@ -664,13 +664,13 @@ CREATE TABLE support_tickets (
   status TEXT,         -- open / closed
   created_at TEXT      -- 受付日時
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO support_tickets VALUES (1,1,2,''請求'',''closed'',''2026-05-12 14:00:00'');
 INSERT INTO support_tickets VALUES (2,2,4,''不具合'',''open'',''2026-06-20 09:30:00'');
 INSERT INTO support_tickets VALUES (3,3,7,''操作方法'',''closed'',''2026-04-03 11:00:00'');
@@ -684,7 +684,7 @@ INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
 FROM customers c
 LEFT JOIN support_tickets t ON c.id = t.customer_id
 WHERE t.id IS NULL
-ORDER BY c.company_name', '[{"company_name":"リバーサイド株式会社"},{"company_name":"株式会社ヤマビコ建設"}]');
+ORDER BY c.company_name', '[{"company_name":"アマオト株式会社"},{"company_name":"株式会社ヤマビコ建設"}]');
 
 -- Lv.26 企業別の問い合わせ件数（ゼロ件も含む）
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -706,13 +706,13 @@ CREATE TABLE support_tickets (
   status TEXT,         -- open / closed
   created_at TEXT      -- 受付日時
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO support_tickets VALUES (1,1,2,''請求'',''closed'',''2026-05-12 14:00:00'');
 INSERT INTO support_tickets VALUES (2,2,4,''不具合'',''open'',''2026-06-20 09:30:00'');
 INSERT INTO support_tickets VALUES (3,3,7,''操作方法'',''closed'',''2026-04-03 11:00:00'');
@@ -726,7 +726,7 @@ INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
 FROM customers c
 LEFT JOIN support_tickets t ON c.id = t.customer_id
 GROUP BY c.company_name
-ORDER BY c.company_name', '[{"company_name":"グリーンリーフ株式会社","ticket_count":"1"},{"company_name":"サクラ会計事務所","ticket_count":"1"},{"company_name":"テックフォワード株式会社","ticket_count":"1"},{"company_name":"リバーサイド株式会社","ticket_count":"0"},{"company_name":"株式会社みなと製作所","ticket_count":"2"},{"company_name":"株式会社アオゾラ商事","ticket_count":"2"},{"company_name":"株式会社ホシノ物流","ticket_count":"1"},{"company_name":"株式会社ヤマビコ建設","ticket_count":"0"}]');
+ORDER BY c.company_name', '[{"company_name":"アマオト株式会社","ticket_count":"0"},{"company_name":"グリーンリーフ株式会社","ticket_count":"1"},{"company_name":"サクラ会計事務所","ticket_count":"1"},{"company_name":"ソラウミ技研株式会社","ticket_count":"1"},{"company_name":"株式会社みなと製作所","ticket_count":"2"},{"company_name":"株式会社アオゾラ商事","ticket_count":"2"},{"company_name":"株式会社ホシノ物流","ticket_count":"1"},{"company_name":"株式会社ヤマビコ建設","ticket_count":"0"}]');
 
 -- Lv.27 直近のログイン5件
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -764,8 +764,8 @@ INSERT INTO login_logs VALUES (15,14,''2026-07-03 12:30:00'');
 INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -774,7 +774,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (27, 'SELECT u.name, l.login_at
 FROM login_logs l
@@ -874,20 +874,20 @@ INSERT INTO subscriptions VALUES (8,6,1,''active'',''2025-05-01'',NULL);
 INSERT INTO subscriptions VALUES (9,7,2,''canceled'',''2025-08-18'',''2026-02-28'');
 INSERT INTO subscriptions VALUES (10,8,2,''trial'',''2026-01-09'',NULL);
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (29, 'SELECT c.company_name, i.amount, i.paid
 FROM invoices i
 INNER JOIN subscriptions s ON i.subscription_id = s.id
 INNER JOIN customers c ON s.customer_id = c.id
 WHERE i.billing_month = ''2026-06''
-ORDER BY c.company_name', '[{"company_name":"グリーンリーフ株式会社","amount":"29800","paid":"1"},{"company_name":"テックフォワード株式会社","amount":"9800","paid":"1"},{"company_name":"株式会社みなと製作所","amount":"98000","paid":"0"},{"company_name":"株式会社アオゾラ商事","amount":"29800","paid":"0"},{"company_name":"株式会社ホシノ物流","amount":"29800","paid":"0"}]');
+ORDER BY c.company_name', '[{"company_name":"グリーンリーフ株式会社","amount":"29800","paid":"1"},{"company_name":"ソラウミ技研株式会社","amount":"9800","paid":"1"},{"company_name":"株式会社みなと製作所","amount":"98000","paid":"0"},{"company_name":"株式会社アオゾラ商事","amount":"29800","paid":"0"},{"company_name":"株式会社ホシノ物流","amount":"29800","paid":"0"}]');
 
 -- Lv.30 未払い請求のリマインドリスト
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -938,13 +938,13 @@ INSERT INTO subscriptions VALUES (8,6,1,''active'',''2025-05-01'',NULL);
 INSERT INTO subscriptions VALUES (9,7,2,''canceled'',''2025-08-18'',''2026-02-28'');
 INSERT INTO subscriptions VALUES (10,8,2,''trial'',''2026-01-09'',NULL);
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (30, 'SELECT c.company_name, i.billing_month, i.amount
 FROM invoices i
@@ -989,13 +989,13 @@ INSERT INTO subscriptions VALUES (8,6,1,''active'',''2025-05-01'',NULL);
 INSERT INTO subscriptions VALUES (9,7,2,''canceled'',''2025-08-18'',''2026-02-28'');
 INSERT INTO subscriptions VALUES (10,8,2,''trial'',''2026-01-09'',NULL);
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO plans VALUES (1,''Free'',0);
 INSERT INTO plans VALUES (2,''Starter'',9800);
 INSERT INTO plans VALUES (3,''Business'',29800);
@@ -1030,8 +1030,8 @@ CREATE TABLE login_logs (
 );', 'INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -1040,7 +1040,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');
 INSERT INTO login_logs VALUES (1,1,''2026-06-29 09:12:00'');
 INSERT INTO login_logs VALUES (2,1,''2026-07-01 08:55:00'');
 INSERT INTO login_logs VALUES (3,1,''2026-07-03 09:02:00'');
@@ -1107,8 +1107,8 @@ INSERT INTO feature_usage VALUES (16,12,5,''2026-07-03 10:20:00'');
 INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -1117,7 +1117,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');
 INSERT INTO products VALUES (1,''タスク管理'',''業務効率化'');
 INSERT INTO products VALUES (2,''ワークフロー'',''業務効率化'');
 INSERT INTO products VALUES (3,''ダッシュボード'',''分析'');
@@ -1167,13 +1167,13 @@ INSERT INTO subscriptions VALUES (8,6,1,''active'',''2025-05-01'',NULL);
 INSERT INTO subscriptions VALUES (9,7,2,''canceled'',''2025-08-18'',''2026-02-28'');
 INSERT INTO subscriptions VALUES (10,8,2,''trial'',''2026-01-09'',NULL);
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO plans VALUES (1,''Free'',0);
 INSERT INTO plans VALUES (2,''Starter'',9800);
 INSERT INTO plans VALUES (3,''Business'',29800);
@@ -1207,18 +1207,18 @@ CREATE TABLE users (
   status TEXT,         -- active / inactive
   created_at TEXT      -- 登録日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -1227,13 +1227,13 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (35, 'SELECT c.company_name, COUNT(u.id) AS active_users
 FROM customers c
 LEFT JOIN users u ON c.id = u.customer_id AND u.status = ''active''
 GROUP BY c.company_name
-ORDER BY active_users DESC, c.company_name', '[{"company_name":"テックフォワード株式会社","active_users":"2"},{"company_name":"株式会社みなと製作所","active_users":"2"},{"company_name":"株式会社アオゾラ商事","active_users":"2"},{"company_name":"株式会社ホシノ物流","active_users":"2"},{"company_name":"グリーンリーフ株式会社","active_users":"1"},{"company_name":"サクラ会計事務所","active_users":"1"},{"company_name":"リバーサイド株式会社","active_users":"1"},{"company_name":"株式会社ヤマビコ建設","active_users":"1"}]');
+ORDER BY active_users DESC, c.company_name', '[{"company_name":"ソラウミ技研株式会社","active_users":"2"},{"company_name":"株式会社みなと製作所","active_users":"2"},{"company_name":"株式会社アオゾラ商事","active_users":"2"},{"company_name":"株式会社ホシノ物流","active_users":"2"},{"company_name":"アマオト株式会社","active_users":"1"},{"company_name":"グリーンリーフ株式会社","active_users":"1"},{"company_name":"サクラ会計事務所","active_users":"1"},{"company_name":"株式会社ヤマビコ建設","active_users":"1"}]');
 
 -- Lv.36 平均より大きい企業はどこ？
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -1246,13 +1246,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (36, 'SELECT company_name, employee_count
 FROM customers
@@ -1279,13 +1279,13 @@ CREATE TABLE support_tickets (
   status TEXT,         -- open / closed
   created_at TEXT      -- 受付日時
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO support_tickets VALUES (1,1,2,''請求'',''closed'',''2026-05-12 14:00:00'');
 INSERT INTO support_tickets VALUES (2,2,4,''不具合'',''open'',''2026-06-20 09:30:00'');
 INSERT INTO support_tickets VALUES (3,3,7,''操作方法'',''closed'',''2026-04-03 11:00:00'');
@@ -1298,7 +1298,7 @@ INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (37, 'SELECT company_name
 FROM customers
 WHERE id IN (SELECT customer_id FROM support_tickets)
-ORDER BY company_name', '[{"company_name":"グリーンリーフ株式会社"},{"company_name":"サクラ会計事務所"},{"company_name":"テックフォワード株式会社"},{"company_name":"株式会社みなと製作所"},{"company_name":"株式会社アオゾラ商事"},{"company_name":"株式会社ホシノ物流"}]');
+ORDER BY company_name', '[{"company_name":"グリーンリーフ株式会社"},{"company_name":"サクラ会計事務所"},{"company_name":"ソラウミ技研株式会社"},{"company_name":"株式会社みなと製作所"},{"company_name":"株式会社アオゾラ商事"},{"company_name":"株式会社ホシノ物流"}]');
 
 -- Lv.38 未ログインユーザーをサブクエリで
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -1321,8 +1321,8 @@ CREATE TABLE login_logs (
 );', 'INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -1331,7 +1331,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');
 INSERT INTO login_logs VALUES (1,1,''2026-06-29 09:12:00'');
 INSERT INTO login_logs VALUES (2,1,''2026-07-01 08:55:00'');
 INSERT INTO login_logs VALUES (3,1,''2026-07-03 09:02:00'');
@@ -1364,13 +1364,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (39, 'SELECT company_name,
   CASE
@@ -1379,7 +1379,7 @@ INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
     ELSE ''小規模''
   END AS company_size
 FROM customers
-ORDER BY id', '[{"company_name":"株式会社アオゾラ商事","company_size":"中規模"},{"company_name":"テックフォワード株式会社","company_size":"小規模"},{"company_name":"株式会社みなと製作所","company_size":"大規模"},{"company_name":"グリーンリーフ株式会社","company_size":"中規模"},{"company_name":"株式会社ホシノ物流","company_size":"中規模"},{"company_name":"サクラ会計事務所","company_size":"小規模"},{"company_name":"株式会社ヤマビコ建設","company_size":"大規模"},{"company_name":"リバーサイド株式会社","company_size":"小規模"}]');
+ORDER BY id', '[{"company_name":"株式会社アオゾラ商事","company_size":"中規模"},{"company_name":"ソラウミ技研株式会社","company_size":"小規模"},{"company_name":"株式会社みなと製作所","company_size":"大規模"},{"company_name":"グリーンリーフ株式会社","company_size":"中規模"},{"company_name":"株式会社ホシノ物流","company_size":"中規模"},{"company_name":"サクラ会計事務所","company_size":"小規模"},{"company_name":"株式会社ヤマビコ建設","company_size":"大規模"},{"company_name":"アマオト株式会社","company_size":"小規模"}]');
 
 -- Lv.40 支払状況をひと目でわかる形に
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -1460,8 +1460,8 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
 );', 'INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -1470,7 +1470,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (42, 'SELECT AVG(user_count) AS avg_users
 FROM (SELECT customer_id, COUNT(*) AS user_count FROM users GROUP BY customer_id) AS t', '[{"avg_users":"1.75"}]');
@@ -1534,13 +1534,13 @@ INSERT INTO support_tickets VALUES (6,5,11,''請求'',''open'',''2026-07-01 13:4
 INSERT INTO support_tickets VALUES (7,6,12,''不具合'',''closed'',''2026-05-30 16:00:00'');
 INSERT INTO support_tickets VALUES (8,1,1,''操作方法'',''open'',''2026-06-25 09:00:00'');
 INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (44, 'WITH ticket_counts AS (
   SELECT customer_id, COUNT(*) AS ticket_count
@@ -1550,7 +1550,7 @@ INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
 SELECT c.company_name, t.ticket_count
 FROM ticket_counts t
 INNER JOIN customers c ON t.customer_id = c.id
-ORDER BY t.ticket_count DESC, c.company_name', '[{"company_name":"株式会社みなと製作所","ticket_count":"2"},{"company_name":"株式会社アオゾラ商事","ticket_count":"2"},{"company_name":"グリーンリーフ株式会社","ticket_count":"1"},{"company_name":"サクラ会計事務所","ticket_count":"1"},{"company_name":"テックフォワード株式会社","ticket_count":"1"},{"company_name":"株式会社ホシノ物流","ticket_count":"1"}]');
+ORDER BY t.ticket_count DESC, c.company_name', '[{"company_name":"株式会社みなと製作所","ticket_count":"2"},{"company_name":"株式会社アオゾラ商事","ticket_count":"2"},{"company_name":"グリーンリーフ株式会社","ticket_count":"1"},{"company_name":"サクラ会計事務所","ticket_count":"1"},{"company_name":"ソラウミ技研株式会社","ticket_count":"1"},{"company_name":"株式会社ホシノ物流","ticket_count":"1"}]');
 
 -- Lv.45 重点アプローチ先リスト
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -1563,18 +1563,18 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (45, 'SELECT company_name FROM customers WHERE industry = ''IT''
 UNION
 SELECT company_name FROM customers WHERE employee_count >= 200
-ORDER BY company_name', '[{"company_name":"テックフォワード株式会社"},{"company_name":"リバーサイド株式会社"},{"company_name":"株式会社みなと製作所"},{"company_name":"株式会社ヤマビコ建設"}]');
+ORDER BY company_name', '[{"company_name":"アマオト株式会社"},{"company_name":"ソラウミ技研株式会社"},{"company_name":"株式会社みなと製作所"},{"company_name":"株式会社ヤマビコ建設"}]');
 
 -- Lv.46 解約率を計算する
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -1629,13 +1629,13 @@ CREATE TABLE invoices (
   amount INTEGER,          -- 請求金額
   paid INTEGER             -- 支払済み=1 / 未払い=0
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO subscriptions VALUES (1,1,3,''active'',''2024-04-01'',NULL);
 INSERT INTO subscriptions VALUES (2,2,2,''active'',''2024-06-15'',NULL);
 INSERT INTO subscriptions VALUES (3,3,4,''active'',''2024-09-01'',NULL);
@@ -1784,18 +1784,18 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (51, 'SELECT company_name, employee_count,
   ROW_NUMBER() OVER (ORDER BY employee_count DESC) AS rn
 FROM customers
-ORDER BY rn', '[{"company_name":"株式会社みなと製作所","employee_count":"300","rn":"1"},{"company_name":"株式会社ヤマビコ建設","employee_count":"210","rn":"2"},{"company_name":"株式会社ホシノ物流","employee_count":"150","rn":"3"},{"company_name":"株式会社アオゾラ商事","employee_count":"120","rn":"4"},{"company_name":"グリーンリーフ株式会社","employee_count":"80","rn":"5"},{"company_name":"テックフォワード株式会社","employee_count":"45","rn":"6"},{"company_name":"リバーサイド株式会社","employee_count":"25","rn":"7"},{"company_name":"サクラ会計事務所","employee_count":"12","rn":"8"}]');
+ORDER BY rn', '[{"company_name":"株式会社みなと製作所","employee_count":"300","rn":"1"},{"company_name":"株式会社ヤマビコ建設","employee_count":"210","rn":"2"},{"company_name":"株式会社ホシノ物流","employee_count":"150","rn":"3"},{"company_name":"株式会社アオゾラ商事","employee_count":"120","rn":"4"},{"company_name":"グリーンリーフ株式会社","employee_count":"80","rn":"5"},{"company_name":"ソラウミ技研株式会社","employee_count":"45","rn":"6"},{"company_name":"アマオト株式会社","employee_count":"25","rn":"7"},{"company_name":"サクラ会計事務所","employee_count":"12","rn":"8"}]');
 
 -- Lv.52 同額の請求は同じ順位に
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -1839,8 +1839,8 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
 );', 'INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -1849,7 +1849,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (53, 'SELECT customer_id, name,
   ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY created_at) AS member_no
@@ -2089,18 +2089,18 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (61, 'SELECT json_object(''name'', company_name, ''employees'', employee_count) AS customer_json
 FROM customers
 ORDER BY id
-LIMIT 3', '[{"customer_json":"{\"name\":\"株式会社アオゾラ商事\",\"employees\":120}"},{"customer_json":"{\"name\":\"テックフォワード株式会社\",\"employees\":45}"},{"customer_json":"{\"name\":\"株式会社みなと製作所\",\"employees\":300}"}]');
+LIMIT 3', '[{"customer_json":"{\"name\":\"株式会社アオゾラ商事\",\"employees\":120}"},{"customer_json":"{\"name\":\"ソラウミ技研株式会社\",\"employees\":45}"},{"customer_json":"{\"name\":\"株式会社みなと製作所\",\"employees\":300}"}]');
 
 -- Lv.62 曜日別のログイン傾向
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -2203,13 +2203,13 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (65, 'SELECT company_name, created_at
 FROM customers
@@ -2295,18 +2295,18 @@ INSERT INTO schemas (problem_id, ddl, seed_data) VALUES
   employee_count INTEGER, -- 従業員数
   created_at TEXT         -- 契約開始日
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');');
 INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES
   (68, 'SELECT company_name, employee_count,
   NTILE(4) OVER (ORDER BY employee_count DESC) AS size_group
 FROM customers
-ORDER BY employee_count DESC', '[{"company_name":"株式会社みなと製作所","employee_count":"300","size_group":"1"},{"company_name":"株式会社ヤマビコ建設","employee_count":"210","size_group":"1"},{"company_name":"株式会社ホシノ物流","employee_count":"150","size_group":"2"},{"company_name":"株式会社アオゾラ商事","employee_count":"120","size_group":"2"},{"company_name":"グリーンリーフ株式会社","employee_count":"80","size_group":"3"},{"company_name":"テックフォワード株式会社","employee_count":"45","size_group":"3"},{"company_name":"リバーサイド株式会社","employee_count":"25","size_group":"4"},{"company_name":"サクラ会計事務所","employee_count":"12","size_group":"4"}]');
+ORDER BY employee_count DESC', '[{"company_name":"株式会社みなと製作所","employee_count":"300","size_group":"1"},{"company_name":"株式会社ヤマビコ建設","employee_count":"210","size_group":"1"},{"company_name":"株式会社ホシノ物流","employee_count":"150","size_group":"2"},{"company_name":"株式会社アオゾラ商事","employee_count":"120","size_group":"2"},{"company_name":"グリーンリーフ株式会社","employee_count":"80","size_group":"3"},{"company_name":"ソラウミ技研株式会社","employee_count":"45","size_group":"3"},{"company_name":"アマオト株式会社","employee_count":"25","size_group":"4"},{"company_name":"サクラ会計事務所","employee_count":"12","size_group":"4"}]');
 
 -- Lv.69 解約予兆のある企業を探す
 INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES
@@ -2344,13 +2344,13 @@ CREATE TABLE login_logs (
   user_id INTEGER, -- ユーザーID
   login_at TEXT    -- ログイン日時
 );', 'INSERT INTO customers VALUES (1,''株式会社アオゾラ商事'',''卸売'',120,''2024-04-01'');
-INSERT INTO customers VALUES (2,''テックフォワード株式会社'',''IT'',45,''2024-06-15'');
+INSERT INTO customers VALUES (2,''ソラウミ技研株式会社'',''IT'',45,''2024-06-15'');
 INSERT INTO customers VALUES (3,''株式会社みなと製作所'',''製造'',300,''2024-09-01'');
 INSERT INTO customers VALUES (4,''グリーンリーフ株式会社'',''小売'',80,''2025-01-20'');
 INSERT INTO customers VALUES (5,''株式会社ホシノ物流'',''物流'',150,''2025-03-10'');
 INSERT INTO customers VALUES (6,''サクラ会計事務所'',''士業'',12,''2025-05-01'');
 INSERT INTO customers VALUES (7,''株式会社ヤマビコ建設'',''建設'',210,''2025-08-18'');
-INSERT INTO customers VALUES (8,''リバーサイド株式会社'',''IT'',25,''2026-01-09'');
+INSERT INTO customers VALUES (8,''アマオト株式会社'',''IT'',25,''2026-01-09'');
 INSERT INTO subscriptions VALUES (1,1,3,''active'',''2024-04-01'',NULL);
 INSERT INTO subscriptions VALUES (2,2,2,''active'',''2024-06-15'',NULL);
 INSERT INTO subscriptions VALUES (3,3,4,''active'',''2024-09-01'',NULL);
@@ -2364,8 +2364,8 @@ INSERT INTO subscriptions VALUES (10,8,2,''trial'',''2026-01-09'',NULL);
 INSERT INTO users VALUES (1,1,''田島 圭介'',''k.tajima@aozora.example.jp'',''営業'',''active'',''2024-04-05'');
 INSERT INTO users VALUES (2,1,''森本 由紀'',''y.morimoto@aozora.example.jp'',''経理'',''active'',''2024-04-06'');
 INSERT INTO users VALUES (3,1,''小野 拓'',''t.ono@aozora.example.jp'',''営業'',''inactive'',''2024-05-10'');
-INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@techforward.example.jp'',''開発'',''active'',''2024-06-20'');
-INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@techforward.example.jp'',''開発'',''active'',''2024-07-01'');
+INSERT INTO users VALUES (4,2,''藤井 彩'',''a.fujii@soraumi.example.jp'',''開発'',''active'',''2024-06-20'');
+INSERT INTO users VALUES (5,2,''中山 蓮'',''r.nakayama@soraumi.example.jp'',''開発'',''active'',''2024-07-01'');
 INSERT INTO users VALUES (6,3,''石田 廉'',''r.ishida@minato.example.jp'',''生産管理'',''active'',''2024-09-05'');
 INSERT INTO users VALUES (7,3,''大森 早紀'',''s.omori@minato.example.jp'',''経理'',''active'',''2024-09-06'');
 INSERT INTO users VALUES (8,3,''神谷 亮'',''r.kamiya@minato.example.jp'',''営業'',''inactive'',''2025-02-14'');
@@ -2374,7 +2374,7 @@ INSERT INTO users VALUES (10,5,''三浦 大地'',''d.miura@hoshino.example.jp'',
 INSERT INTO users VALUES (11,5,''白石 楓'',''k.shiraishi@hoshino.example.jp'',''経理'',''active'',''2025-04-01'');
 INSERT INTO users VALUES (12,6,''桜井 誠'',''m.sakurai@sakura.example.jp'',''会計'',''active'',''2025-05-02'');
 INSERT INTO users VALUES (13,7,''高村 直人'',''n.takamura@yamabiko.example.jp'',''営業'',''active'',''2025-08-20'');
-INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@riverside.example.jp'',''開発'',''active'',''2026-01-12'');
+INSERT INTO users VALUES (14,8,''井上 千夏'',''c.inoue@amaoto.example.jp'',''開発'',''active'',''2026-01-12'');
 INSERT INTO login_logs VALUES (1,1,''2026-06-29 09:12:00'');
 INSERT INTO login_logs VALUES (2,1,''2026-07-01 08:55:00'');
 INSERT INTO login_logs VALUES (3,1,''2026-07-03 09:02:00'');
