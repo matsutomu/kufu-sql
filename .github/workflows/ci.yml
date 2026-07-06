@@ -55,13 +55,49 @@ jobs:
 
       - name: Deploy frontend to S3
         run: |
-          aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete
+          # status.json（Lambdaが生成）とmaintenance.htmlはdistに無いため、--deleteの削除対象から保護する
+          aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete \
+            --exclude "status.json" --exclude "maintenance.html"
 
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
             --distribution-id ERPTQ4JQUVJ1A \
             --paths "/*"
+
+      - name: Ensure EC2 instance is running
+        run: |
+          INSTANCE_ID=${{ secrets.EC2_INSTANCE_ID }}
+
+          # 1. 現在の状態を確認
+          STATE=$(aws ec2 describe-instances \
+            --instance-ids "$INSTANCE_ID" \
+            --query "Reservations[0].Instances[0].State.Name" \
+            --output text)
+          echo "instance state: $STATE"
+
+          # 2. running でなければ起動して完了を待つ
+          if [ "$STATE" != "running" ]; then
+            aws ec2 start-instances --instance-ids "$INSTANCE_ID"
+            aws ec2 wait instance-running --instance-ids "$INSTANCE_ID"
+            echo "instance started"
+          fi
+
+          # 3. SSMエージェントが Online になるまで待つ（5秒間隔で最大30回）
+          for i in $(seq 1 30); do
+            PING=$(aws ssm describe-instance-information \
+              --filters "Key=InstanceIds,Values=$INSTANCE_ID" \
+              --query "InstanceInformationList[0].PingStatus" \
+              --output text 2>/dev/null)
+            if [ "$PING" = "Online" ]; then
+              echo "SSM agent is online"
+              exit 0
+            fi
+            echo "waiting for SSM agent... ($i/30, PingStatus=$PING)"
+            sleep 5
+          done
+          echo "SSM agent did not come online in time" >&2
+          exit 1
 
       - name: Deploy backend to EC2
         run: |

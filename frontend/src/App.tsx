@@ -13,6 +13,26 @@ const SESSION_ID = (() => {
 
 type Tab = "result" | "expected" | "hint";
 
+// EC2の起動状態（status.json）を取得する。失敗・タイムアウト・不正な形式のときは
+// null を返し、呼び出し側は従来のAPI呼び出しフロー（apiDown判定）にフォールバックする。
+const STATUS_TIMEOUT_MS = 3000;
+async function fetchEc2Status(): Promise<string | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), STATUS_TIMEOUT_MS);
+  try {
+    const res = await fetch("/status.json", { signal: ctrl.signal, cache: "no-store" });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return typeof data.status === "string" ? data.status : null;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const isEc2Down = (status: string | null) => status === "stopped" || status === "stopping";
+
 // カラーテーマ（濃い青ベース）
 const C = {
   primary: "#1e3a8a",      // メインの濃い青
@@ -61,16 +81,41 @@ export default function App() {
   );
 
   useEffect(() => {
-    fetchProblems()
-      .then((p) => { setProblems(p); setApiDown(false); })
-      .catch((e) => { console.error(e); setApiDown(true); });
-    // サーバーに保存された進捗を復元（session_idはlocalStorageで永続化されている）
-    fetchProgress(SESSION_ID)
-      .then((items) => {
-        const solved = items.filter((it) => it.is_correct).map((it) => it.problem_id);
-        if (solved.length > 0) setSolvedIds(new Set(solved));
-      })
-      .catch((e) => console.error(e));
+    let cancelled = false;
+
+    const loadApp = () => {
+      fetchProblems()
+        .then((p) => { if (cancelled) return; setProblems(p); setApiDown(false); })
+        .catch((e) => { console.error(e); if (!cancelled) setApiDown(true); });
+      // サーバーに保存された進捗を復元（session_idはlocalStorageで永続化されている）
+      fetchProgress(SESSION_ID)
+        .then((items) => {
+          if (cancelled) return;
+          const solved = items.filter((it) => it.is_correct).map((it) => it.problem_id);
+          if (solved.length > 0) setSolvedIds(new Set(solved));
+        })
+        .catch((e) => console.error(e));
+    };
+
+    // 先にEC2の起動状態を確認し、停止中ならAPIを呼ばずにサービス時間外画面を出す。
+    // 取得失敗（null）時は従来どおりAPI呼び出しに進み、apiDown判定に任せる。
+    fetchEc2Status().then((status) => {
+      if (cancelled) return;
+      if (isEc2Down(status)) {
+        setApiDown(true);
+        return;
+      }
+      loadApp();
+    });
+
+    // 表示中も30秒ごとに状態を再取得し、稼働中に停止へ切り替わったら自動で画面を切り替える
+    const interval = setInterval(() => {
+      fetchEc2Status().then((status) => {
+        if (!cancelled && isEc2Down(status)) setApiDown(true);
+      });
+    }, 30000);
+
+    return () => { cancelled = true; clearInterval(interval); };
   }, []);
 
   useEffect(() => {

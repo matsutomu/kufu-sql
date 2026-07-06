@@ -1,2 +1,4 @@
 frontend/.env
 frontend/.env.local
+node_modules/
+infra/scripts/function.zip
