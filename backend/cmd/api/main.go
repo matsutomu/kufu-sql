@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"os"
 
+	_ "github.com/lib/pq"
 	"github.com/matsutomu/kufu-sql/backend/internal/handler"
 	"github.com/matsutomu/kufu-sql/backend/internal/repository"
 	"github.com/matsutomu/kufu-sql/backend/internal/usecase"
-	_ "github.com/lib/pq"
 )
 
 var allowedOrigins = []string{
@@ -69,18 +69,22 @@ func main() {
 	}
 	log.Println("DB接続成功")
 
-	problemRepo  := repository.NewProblemRepository(db)
+	problemRepo := repository.NewProblemRepository(db)
 	progressRepo := repository.NewProgressRepository(db)
 
-	ph  := handler.NewProblemHandler(problemRepo)
-	jh  := handler.NewJudgeHandler(problemRepo, progressRepo, usecase.NewJudgeUsecase())
+	ph := handler.NewProblemHandler(problemRepo)
+	jh := handler.NewJudgeHandler(problemRepo, progressRepo, usecase.NewJudgeUsecase())
 	prh := handler.NewProgressHandler(progressRepo)
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+	healthHandler := func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
-	})
+	}
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/health", healthHandler)
+	// CloudFrontは /api/* のみEC2へ振り分けるため、ブラウザから到達できるパスでも公開する
+	mux.HandleFunc("/api/health", healthHandler)
 	mux.HandleFunc("/api/problems", ph.GetProblems)
 	mux.HandleFunc("/api/problems/", ph.GetProblemDetail)
 	mux.HandleFunc("/api/judge", jh.Judge)
