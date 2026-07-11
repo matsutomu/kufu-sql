@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' https://www.googletagmanager.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://kufusql-api.sanpo-insight.com https://www.google-analytics.com https://www.googletagmanager.com https://cdnjs.cloudflare.com; img-src 'self' data: https://www.google-analytics.com; font-src 'self';">
     <title>kufu:SQL｜手を動かして学ぶSQL学習サービス</title>
     <meta name="description" content="ブラウザ上でSQLを実行しながら学べる学習サービス。SQL基礎から集計・JOIN・PostgreSQL実践までLv.1〜70の問題で段階的にスキルアップ。">
     <link rel="canonical" href="https://kufusql.sanpo-insight.com/">
@@ -23,16 +24,7 @@
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-LHJ15YW53R"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-LHJ15YW53R', {
-        'anonymize_ip': true,
-        'allow_google_signals': false,
-        'allow_ad_personalization_signals': false
-      });
-    </script>
+    <script src="/ga-init.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js"></script>
   </head>
   <body>
