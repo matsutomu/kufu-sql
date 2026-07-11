@@ -8,6 +8,8 @@ export type Problem = {
   difficulty: "easy" | "medium" | "hard";
   hint: string;
   sort_order: number;
+  sql_template?: string;
+  blanks?: string;
 };
 
 export type ProblemDetail = {
@@ -43,7 +45,8 @@ export async function fetchProblemDetail(id: number): Promise<ProblemDetail> {
 export async function judge(
   problemId: number,
   sessionId: string,
-  resultRows: Record<string, string>[]
+  resultRows: Record<string, string>[],
+  answerMode?: "pc" | "mobile"
 ): Promise<JudgeResponse> {
   const res = await fetch(`${BASE_URL}/api/judge`, {
     method: "POST",
@@ -52,6 +55,7 @@ export async function judge(
       problem_id: problemId,
       session_id: sessionId,
       result_rows: resultRows,
+      answer_mode: answerMode,
     }),
   });
   if (!res.ok) throw new Error("採点に失敗しました");

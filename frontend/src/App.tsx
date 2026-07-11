@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { fetchProblems, fetchProblemDetail, fetchProgress, judge } from "./api/client";
 import type { Problem, ProblemDetail, JudgeResponse } from "./api/client";
 import { useSqlJs } from "./hooks/useSqlJs";
+import { useDeviceMode } from "./hooks/useDeviceMode";
 import "./index.css";
 
 const SESSION_ID = (() => {
@@ -66,6 +67,8 @@ export default function App() {
   const [apiDown, setApiDown]       = useState(false);
   // 閉じているカテゴリのID（初期状態は全カテゴリ開いた状態）
   const [closedCats, setClosedCats] = useState<Set<number>>(new Set());
+  // モバイル幅でのみ使う画面状態（一覧⇔詳細）。PC幅では参照しない
+  const [mobileView, setMobileView] = useState<"list" | "detail">("list");
 
   const toggleCategory = (catId: number) => {
     setClosedCats((prev) => {
@@ -79,6 +82,7 @@ export default function App() {
     detail?.schema.ddl ?? "",
     detail?.schema.seed_data ?? ""
   );
+  const { isMobile } = useDeviceMode();
 
   useEffect(() => {
     let cancelled = false;
@@ -140,7 +144,8 @@ export default function App() {
       setResultCols(columns);
       setResultRows(rows);
       setTab("result");
-      judge(detail.problem.id, SESSION_ID, rows).then((res) => {
+      const answerMode = isMobile && hasMobileMode(detail.problem) ? "mobile" : "pc";
+      judge(detail.problem.id, SESSION_ID, rows, answerMode).then((res) => {
         setJudgeRes(res);
         if (res.is_correct) setSolvedIds((prev) => new Set([...prev, detail.problem.id]));
       });
@@ -149,7 +154,7 @@ export default function App() {
       setResultRows([]);
       setResultCols([]);
     }
-  }, [execute, sql, detail]);
+  }, [execute, sql, detail, isMobile]);
 
   const diffBadge = (d: string) => {
     const map: Record<string, string> = { easy: "初級", medium: "中級", hard: "上級" };
@@ -168,6 +173,14 @@ export default function App() {
   const totalCount = problems.length;
   const progressPct = totalCount > 0 ? Math.round((solvedCount / totalCount) * 100) : 0;
 
+  // 現在の問題の次（一覧の並び順で次の1件）。無ければ最終問題
+  const currentIndex = problems.findIndex((p) => p.id === selected);
+  const nextProblem = currentIndex >= 0 ? problems[currentIndex + 1] : undefined;
+  const goToNextProblem = () => {
+    if (!nextProblem) return;
+    setSelected(nextProblem.id);
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100vh", fontFamily: "-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif" }}>
       {/* ヘッダー */}
@@ -177,12 +190,13 @@ export default function App() {
       </div>
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        {/* サイドバー */}
-        <div style={{ width: 260, background: C.sidebarBg, borderRight: `1px solid ${C.border}`, overflowY: "auto", padding: "12px 10px", flexShrink: 0 }}>
+        {/* サイドバー（モバイル幅では一覧画面のときだけ表示し、幅いっぱいに広げる） */}
+        {(!isMobile || mobileView === "list") && (
+        <div style={{ width: isMobile ? "100%" : 260, background: C.sidebarBg, borderRight: isMobile ? "none" : `1px solid ${C.border}`, overflowY: "auto", padding: "12px 10px", flexShrink: 0 }}>
 
           {/* はじめに（シナリオ紹介） */}
           <div
-            onClick={() => { setSelected(null); setDetail(null); }}
+            onClick={() => { setSelected(null); setDetail(null); if (isMobile) setMobileView("detail"); }}
             style={{
               padding: "8px 10px", borderRadius: 6, marginBottom: 12, cursor: "pointer", fontSize: 13, fontWeight: 600,
               background: detail == null ? C.primary : "#fff",
@@ -220,7 +234,7 @@ export default function App() {
               </div>
               {isOpen && probs.map((p) => (
                 <div key={p.id}
-                  onClick={() => setSelected(p.id)}
+                  onClick={() => { setSelected(p.id); if (isMobile) setMobileView("detail"); }}
                   title={p.title}
                   style={{
                     padding: "7px 10px", borderRadius: 6, marginBottom: 2, cursor: "pointer", fontSize: 13,
@@ -239,9 +253,17 @@ export default function App() {
             );
           })}
         </div>
+        )}
 
-        {/* メインパネル */}
-        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        {/* メインパネル（モバイル幅では詳細画面のときだけ表示し、幅いっぱいに広げる） */}
+        {(!isMobile || mobileView === "detail") && (
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: isMobile ? "auto" : "hidden" }}>
+          {isMobile && (
+            <button onClick={() => setMobileView("list")}
+              style={{ display: "flex", alignItems: "center", gap: 6, padding: "10px 14px", background: C.sidebarBg, border: "none", borderBottom: `1px solid ${C.border}`, fontSize: 13, fontWeight: 600, color: C.primary, cursor: "pointer", flexShrink: 0, textAlign: "left" }}>
+              ← 一覧に戻る
+            </button>
+          )}
           {apiDown ? (
             <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 20 }}>
               <div style={{ fontSize: 52, lineHeight: 1 }}>🐱💤</div>
@@ -274,66 +296,315 @@ export default function App() {
                 </pre>
               </div>
 
-              {/* エディタ */}
-              <div style={{ background: "#1e1e2e", padding: "8px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-                <span style={{ fontSize: 11, color: "#888" }}>SQL Editor — sql.js (SQLite)</span>
-                <button onClick={handleRun} disabled={dbLoading}
-                  style={{ background: dbLoading ? "#888" : C.action, color: "#fff", border: "none", borderRadius: 4, padding: "5px 14px", fontSize: 12, fontWeight: 600, cursor: dbLoading ? "not-allowed" : "pointer" }}>
-                  {dbLoading ? "初期化中..." : "▶ 実行"}
-                </button>
-              </div>
-              <textarea value={sql} onChange={(e) => setSql(e.target.value)}
-                placeholder="SELECT * FROM customers;"
-                style={{ background: "#1e1e2e", color: "#cdd6f4", border: "none", outline: "none", padding: "12px 16px", fontSize: 13, fontFamily: "Courier New, monospace", resize: "none", minHeight: 110, lineHeight: 1.7, flexShrink: 0 }}
-              />
-
-              {/* 結果エリア */}
-              <div style={{ flex: 1, borderTop: "1px solid #f0f0f0", display: "flex", flexDirection: "column", overflow: "hidden" }}>
-                <div style={{ display: "flex", background: "#f9f9f9", borderBottom: "1px solid #f0f0f0", flexShrink: 0 }}>
-                  {(["result", "expected", "hint"] as Tab[]).map((t) => (
-                    <div key={t} onClick={() => setTab(t)}
-                      style={{ padding: "7px 16px", fontSize: 12, cursor: "pointer", borderBottom: tab === t ? `2px solid ${C.primary}` : "2px solid transparent", color: tab === t ? C.primary : "#888", fontWeight: tab === t ? 600 : 400 }}>
-                      {t === "result" ? "実行結果" : t === "expected" ? "期待する結果" : "ヒント"}
-                    </div>
-                  ))}
+              {isMobile && !hasMobileMode(detail.problem) && (
+                <div style={{ margin: "0 18px 10px", padding: "8px 12px", background: "#eff6ff", border: "1px solid #bfdbfe", borderRadius: 6, color: "#1e40af", fontSize: 12, lineHeight: 1.6, display: "flex", alignItems: "flex-start", gap: 6, flexShrink: 0 }}>
+                  <span>ℹ️</span>
+                  <span>この問題はスマホの穴埋めモードに未対応です。SQL文を直接入力してください。</span>
                 </div>
+              )}
 
-                <div style={{ flex: 1, overflowY: "auto", padding: "10px 14px" }}>
-                  {sqlError && (
-                    <div style={{ color: "#dc2626", fontSize: 13, marginBottom: 8, padding: "8px 12px", background: "#fef2f2", borderRadius: 6, border: "1px solid #fecaca" }}>
-                      ⚠ {sqlError}
-                    </div>
-                  )}
-                  {tab === "hint" ? (
-                    <div style={{ fontSize: 13, color: "#555", padding: "8px 12px", background: "#fffbeb", borderRadius: 6, border: "1px solid #fde68a" }}>
-                      💡 {detail.problem.hint || "ヒントはありません"}
-                    </div>
-                  ) : tab === "expected" ? (
-                    <ResultTable columns={Object.keys(JSON.parse(detail.expected.result_json)[0] ?? {})} rows={JSON.parse(detail.expected.result_json)} />
-                  ) : (
-                    <ResultTable columns={resultCols} rows={resultRows} />
-                  )}
-                </div>
-
-                {/* フッター */}
-                <div style={{ padding: "6px 14px", background: "#fafaf8", borderTop: "1px solid #f0f0f0", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, flexShrink: 0 }}>
-                  <span style={{ color: "#aaa" }}>{resultRows.length > 0 ? `${resultRows.length}行取得` : ""}</span>
-                  {judgeRes && (
-                    <span style={{
-                      background: judgeRes.is_correct ? C.success : "#dc2626",
-                      color: "#fff", padding: "3px 12px", borderRadius: 3, fontWeight: 600, fontSize: 12
-                    }}>
-                      {judgeRes.is_correct ? "✓ 正解！" : `✗ ${judgeRes.message}`}
-                    </span>
-                  )}
-                </div>
-              </div>
+              {isMobile && hasMobileMode(detail.problem) ? (
+                <MobileAnswerUI
+                  problem={detail.problem} onSqlChange={setSql} onRun={handleRun} dbLoading={dbLoading}
+                  tab={tab} onTabChange={setTab}
+                  resultCols={resultCols} resultRows={resultRows} sqlError={sqlError} judgeRes={judgeRes}
+                  detail={detail}
+                  hasNextProblem={!!nextProblem} onNextProblem={goToNextProblem}
+                />
+              ) : (
+                <SQLEditor
+                  sql={sql} onSqlChange={setSql} onRun={handleRun} dbLoading={dbLoading}
+                  tab={tab} onTabChange={setTab}
+                  resultCols={resultCols} resultRows={resultRows} sqlError={sqlError} judgeRes={judgeRes}
+                  detail={detail} isMobile={isMobile}
+                  hasNextProblem={!!nextProblem} onNextProblem={goToNextProblem}
+                />
+              )}
             </>
           )}
         </div>
+        )}
       </div>
     </div>
   );
+}
+
+// SQL自由記述エディタ。textareaでSQLを入力し、実行結果・期待結果・ヒントをタブ表示する。
+// isMobile時のみ、実行ボタンを画面下部に固定表示する（PC版のレイアウトは一切変更しない）。
+function SQLEditor({
+  sql, onSqlChange, onRun, dbLoading,
+  tab, onTabChange,
+  resultCols, resultRows, sqlError, judgeRes,
+  detail, isMobile,
+  hasNextProblem, onNextProblem,
+}: {
+  sql: string;
+  onSqlChange: (v: string) => void;
+  onRun: () => void;
+  dbLoading: boolean;
+  tab: Tab;
+  onTabChange: (t: Tab) => void;
+  resultCols: string[];
+  resultRows: Record<string, string>[];
+  sqlError: string | null;
+  judgeRes: JudgeResponse | null;
+  detail: ProblemDetail;
+  isMobile?: boolean;
+  hasNextProblem?: boolean;
+  onNextProblem?: () => void;
+}) {
+  const runButton = (
+    <button onClick={onRun} disabled={dbLoading}
+      style={{ background: dbLoading ? "#888" : C.action, color: "#fff", border: "none", borderRadius: 4, padding: isMobile ? "8px 20px" : "5px 14px", fontSize: isMobile ? 13 : 12, fontWeight: 600, cursor: dbLoading ? "not-allowed" : "pointer", width: isMobile ? "100%" : undefined }}>
+      {dbLoading ? "初期化中..." : "▶ 実行"}
+    </button>
+  );
+
+  if (!isMobile) {
+    return (
+      <>
+        {/* エディタ */}
+        <div style={{ background: "#1e1e2e", padding: "8px 14px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+          <span style={{ fontSize: 11, color: "#888" }}>SQL Editor — sql.js (SQLite)</span>
+          {runButton}
+        </div>
+        <textarea value={sql} onChange={(e) => onSqlChange(e.target.value)}
+          placeholder="SELECT * FROM customers;"
+          style={{ background: "#1e1e2e", color: "#cdd6f4", border: "none", outline: "none", padding: "12px 16px", fontSize: 13, fontFamily: "Courier New, monospace", resize: "none", minHeight: 110, lineHeight: 1.7, flexShrink: 0 }}
+        />
+
+        <ResultPanel
+          tab={tab} onTabChange={onTabChange}
+          resultCols={resultCols} resultRows={resultRows} sqlError={sqlError} judgeRes={judgeRes}
+          detail={detail}
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div style={{ paddingBottom: 64 }}>
+        <div style={{ background: "#1e1e2e", padding: "8px 14px" }}>
+          <span style={{ fontSize: 11, color: "#888" }}>SQL Editor — sql.js (SQLite)</span>
+        </div>
+        <textarea value={sql} onChange={(e) => onSqlChange(e.target.value)}
+          placeholder="SELECT * FROM customers;"
+          style={{ display: "block", width: "100%", boxSizing: "border-box", background: "#1e1e2e", color: "#cdd6f4", border: "none", outline: "none", padding: "12px 16px", fontSize: 13, fontFamily: "Courier New, monospace", resize: "none", minHeight: 110, lineHeight: 1.7 }}
+        />
+
+        <ResultPanel
+          tab={tab} onTabChange={onTabChange}
+          resultCols={resultCols} resultRows={resultRows} sqlError={sqlError} judgeRes={judgeRes}
+          detail={detail}
+        />
+
+        <NextProblemBlock judgeRes={judgeRes} hasNextProblem={hasNextProblem} onNextProblem={onNextProblem} />
+      </div>
+
+      {/* 実行ボタン: モバイルでは画面下部に固定表示し、長い問題文でもスクロールせずアクセスできるようにする */}
+      <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, background: "#1e1e2e", padding: "10px 14px", borderTop: "1px solid #333", zIndex: 20 }}>
+        {runButton}
+      </div>
+    </>
+  );
+}
+
+// 正解時に次の問題へ遷移するボタン（最終問題なら完了メッセージ）
+function NextProblemBlock({
+  judgeRes, hasNextProblem, onNextProblem,
+}: {
+  judgeRes: JudgeResponse | null;
+  hasNextProblem?: boolean;
+  onNextProblem?: () => void;
+}) {
+  if (!judgeRes?.is_correct) return null;
+  if (hasNextProblem) {
+    return (
+      <button onClick={onNextProblem}
+        style={{ display: "block", width: "calc(100% - 28px)", margin: "10px 14px", background: C.success, color: "#fff", border: "none", borderRadius: 6, padding: "11px 0", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>
+        次の問題へ →
+      </button>
+    );
+  }
+  return (
+    <div style={{ margin: "10px 14px", padding: "12px 14px", background: "#f0fdf4", border: "1px solid #bbf7d0", borderRadius: 6, color: "#166534", fontSize: 13, textAlign: "center", fontWeight: 600 }}>
+      🎉 お疲れ様でした！全問クリアです
+    </div>
+  );
+}
+
+// 実行結果／期待する結果／ヒントのタブ表示エリア（SQLEditor・MobileAnswerUI共通）
+function ResultPanel({
+  tab, onTabChange,
+  resultCols, resultRows, sqlError, judgeRes,
+  detail,
+}: {
+  tab: Tab;
+  onTabChange: (t: Tab) => void;
+  resultCols: string[];
+  resultRows: Record<string, string>[];
+  sqlError: string | null;
+  judgeRes: JudgeResponse | null;
+  detail: ProblemDetail;
+}) {
+  return (
+    <div style={{ flex: 1, borderTop: "1px solid #f0f0f0", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div style={{ display: "flex", background: "#f9f9f9", borderBottom: "1px solid #f0f0f0", flexShrink: 0 }}>
+        {(["result", "expected", "hint"] as Tab[]).map((t) => (
+          <div key={t} onClick={() => onTabChange(t)}
+            style={{ padding: "7px 16px", fontSize: 12, cursor: "pointer", borderBottom: tab === t ? `2px solid ${C.primary}` : "2px solid transparent", color: tab === t ? C.primary : "#888", fontWeight: tab === t ? 600 : 400 }}>
+            {t === "result" ? "実行結果" : t === "expected" ? "期待する結果" : "ヒント"}
+          </div>
+        ))}
+      </div>
+
+      <div style={{ flex: 1, overflowY: "auto", padding: "10px 14px" }}>
+        {sqlError && (
+          <div style={{ color: "#dc2626", fontSize: 13, marginBottom: 8, padding: "8px 12px", background: "#fef2f2", borderRadius: 6, border: "1px solid #fecaca" }}>
+            ⚠ {sqlError}
+          </div>
+        )}
+        {tab === "hint" ? (
+          <div style={{ fontSize: 13, color: "#555", padding: "8px 12px", background: "#fffbeb", borderRadius: 6, border: "1px solid #fde68a" }}>
+            💡 {detail.problem.hint || "ヒントはありません"}
+          </div>
+        ) : tab === "expected" ? (
+          <ResultTable columns={Object.keys(JSON.parse(detail.expected.result_json)[0] ?? {})} rows={JSON.parse(detail.expected.result_json)} />
+        ) : (
+          <ResultTable columns={resultCols} rows={resultRows} />
+        )}
+      </div>
+
+      {/* フッター */}
+      <div style={{ padding: "6px 14px", background: "#fafaf8", borderTop: "1px solid #f0f0f0", display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, flexShrink: 0 }}>
+        <span style={{ color: "#aaa" }}>{resultRows.length > 0 ? `${resultRows.length}行取得` : ""}</span>
+        {judgeRes && (
+          <span style={{
+            background: judgeRes.is_correct ? C.success : "#dc2626",
+            color: "#fff", padding: "3px 12px", borderRadius: 3, fontWeight: 600, fontSize: 12
+          }}>
+            {judgeRes.is_correct ? "✓ 正解！" : `✗ ${judgeRes.message}`}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// モバイル穴埋めモード。sql_template内のプレースホルダーを選択式（ドロップダウン）で埋めさせ、
+// 選択が完了したら組み立てたSQL文字列を親のsql状態に反映する（採点・sql.js実行のパイプラインはSQLEditorと共通）。
+type Blank = { type: "keyword" | "paren"; correct: string; options: string[] };
+
+function MobileAnswerUI({
+  problem, onSqlChange, onRun, dbLoading,
+  tab, onTabChange,
+  resultCols, resultRows, sqlError, judgeRes,
+  detail,
+  hasNextProblem, onNextProblem,
+}: {
+  problem: Problem;
+  onSqlChange: (v: string) => void;
+  onRun: () => void;
+  dbLoading: boolean;
+  tab: Tab;
+  onTabChange: (t: Tab) => void;
+  resultCols: string[];
+  resultRows: Record<string, string>[];
+  sqlError: string | null;
+  judgeRes: JudgeResponse | null;
+  detail: ProblemDetail;
+  hasNextProblem?: boolean;
+  onNextProblem?: () => void;
+}) {
+  const template = problem.sql_template ?? "";
+  const blanks: Record<string, Blank> = problem.blanks ? JSON.parse(problem.blanks) : {};
+  const blankIds = Object.keys(blanks);
+
+  const [selected, setSelected] = useState<Record<string, string>>({});
+  // 不正解だった直後だけ空欄の正誤ハイライトを表示する。選び直した時点でリセットする
+  const [feedbackActive, setFeedbackActive] = useState(false);
+
+  // 問題が切り替わったら選択状態をリセットする
+  useEffect(() => {
+    setSelected({});
+    setFeedbackActive(false);
+  }, [problem.id]);
+
+  // ダミーの選択肢（INSERT/UPDATE等）はSQL構文エラーになることが多く、その場合judge APIまで
+  // 到達せずsqlErrorだけが立つ。不正解の判定はjudgeRes・sqlErrorのどちらでも発火させる。
+  useEffect(() => {
+    if (sqlError || (judgeRes && !judgeRes.is_correct)) setFeedbackActive(true);
+  }, [judgeRes, sqlError]);
+
+  const handleSelect = (id: string, value: string) => {
+    setSelected((prev) => ({ ...prev, [id]: value }));
+    setFeedbackActive(false);
+  };
+
+  const isComplete = blankIds.length > 0 && blankIds.every((id) => selected[id]);
+  const assembled = template.replace(/\{(\w+)\}/g, (_, id) => selected[id] ?? `{${id}}`);
+
+  useEffect(() => {
+    onSqlChange(isComplete ? assembled : "");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [assembled, isComplete]);
+
+  const parts = template.split(/(\{\w+\})/g);
+
+  return (
+    <>
+      <div style={{ paddingBottom: 64 }}>
+        <div style={{ background: "#1e1e2e", padding: "8px 14px" }}>
+          <span style={{ fontSize: 11, color: "#888" }}>穴埋めモード — タップして選択</span>
+        </div>
+        <div style={{ background: "#1e1e2e", color: "#cdd6f4", padding: "12px 16px", fontSize: 13, fontFamily: "Courier New, monospace", lineHeight: 2.4, whiteSpace: "pre-wrap" }}>
+          {parts.map((part, i) => {
+            const m = part.match(/^\{(\w+)\}$/);
+            const id = m?.[1];
+            const blank = id ? blanks[id] : undefined;
+            if (!id || !blank) return <span key={i}>{part}</span>;
+            const isWrong = feedbackActive && selected[id] !== blank.correct;
+            const isRight = feedbackActive && selected[id] === blank.correct;
+            const borderColor = isWrong ? "#dc2626" : isRight ? "#16a34a" : selected[id] ? C.action : "#555";
+            return (
+              <select key={i} value={selected[id] ?? ""}
+                onChange={(e) => handleSelect(id, e.target.value)}
+                style={{
+                  margin: "0 3px", background: selected[id] ? "#2c3350" : "#3a3f5c", color: "#fff",
+                  border: `2px solid ${borderColor}`, borderRadius: 4,
+                  padding: "2px 6px", fontSize: 13, fontFamily: "Courier New, monospace",
+                }}>
+                <option value="" disabled>?</option>
+                {blank.options.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              </select>
+            );
+          })}
+        </div>
+
+        <ResultPanel
+          tab={tab} onTabChange={onTabChange}
+          resultCols={resultCols} resultRows={resultRows} sqlError={sqlError} judgeRes={judgeRes}
+          detail={detail}
+        />
+
+        <NextProblemBlock judgeRes={judgeRes} hasNextProblem={hasNextProblem} onNextProblem={onNextProblem} />
+      </div>
+
+      {/* 実行ボタン: 画面下部に固定表示し、長い問題文でもスクロールせずアクセスできるようにする */}
+      <div style={{ position: "fixed", left: 0, right: 0, bottom: 0, background: "#1e1e2e", padding: "10px 14px", borderTop: "1px solid #333", zIndex: 20 }}>
+        <button onClick={onRun} disabled={dbLoading || !isComplete}
+          style={{ background: dbLoading || !isComplete ? "#888" : C.action, color: "#fff", border: "none", borderRadius: 4, padding: "8px 20px", fontSize: 13, fontWeight: 600, cursor: dbLoading || !isComplete ? "not-allowed" : "pointer", width: "100%" }}>
+          {dbLoading ? "初期化中..." : "▶ 実行"}
+        </button>
+      </div>
+    </>
+  );
+}
+
+// モバイル穴埋めモードに対応済みの問題かどうか
+function hasMobileMode(problem: Problem): boolean {
+  return !!problem.sql_template && !!problem.blanks;
 }
 
 // シナリオ紹介ページ（初回表示・サイドバーの「はじめに」から表示）
