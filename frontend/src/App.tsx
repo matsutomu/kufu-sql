@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchProblems, fetchProblemDetail, fetchProgress, judge } from "./api/client";
 import type { Problem, ProblemDetail, JudgeResponse } from "./api/client";
+import { checkServiceAvailability, fetchEc2Status, isEc2Down } from "./api/availability";
+import type { ServiceHours } from "./api/availability";
 import { useSqlJs } from "./hooks/useSqlJs";
 import { useDeviceMode } from "./hooks/useDeviceMode";
 import "./index.css";
@@ -13,26 +15,6 @@ const SESSION_ID = (() => {
 })();
 
 type Tab = "result" | "expected" | "hint";
-
-// EC2の起動状態（status.json）を取得する。失敗・タイムアウト・不正な形式のときは
-// null を返し、呼び出し側は従来のAPI呼び出しフロー（apiDown判定）にフォールバックする。
-const STATUS_TIMEOUT_MS = 3000;
-async function fetchEc2Status(): Promise<string | null> {
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), STATUS_TIMEOUT_MS);
-  try {
-    const res = await fetch("/status.json", { signal: ctrl.signal, cache: "no-store" });
-    if (!res.ok) return null;
-    const data = await res.json();
-    return typeof data.status === "string" ? data.status : null;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
-}
-
-const isEc2Down = (status: string | null) => status === "stopped" || status === "stopping";
 
 // カラーテーマ（濃い青ベース）
 const C = {
@@ -65,6 +47,8 @@ export default function App() {
   const [resultRows, setResultRows] = useState<Record<string,string>[]>([]);
   const [resultCols, setResultCols] = useState<string[]>([]);
   const [apiDown, setApiDown]       = useState(false);
+  // おやすみ画面に表示するサービス時間（service-hours.json由来。取得失敗時はnull）
+  const [serviceHours, setServiceHours] = useState<ServiceHours | null>(null);
   // 閉じているカテゴリのID（初期状態は全カテゴリ開いた状態）
   const [closedCats, setClosedCats] = useState<Set<number>>(new Set());
   // モバイル幅でのみ使う画面状態（一覧⇔詳細）。PC幅では参照しない
@@ -101,14 +85,17 @@ export default function App() {
         .catch((e) => console.error(e));
     };
 
-    // 先にEC2の起動状態を確認し、停止中ならAPIを呼ばずにサービス時間外画面を出す。
-    // 取得失敗（null）時は従来どおりAPI呼び出しに進み、apiDown判定に任せる。
-    fetchEc2Status().then((status) => {
+    // サービス時間・EC2状態・ヘルスチェックの順で可用性を判定する。時間外やEC2停止中は
+    // 即closedが通知されておやすみ画面を出し、その後もヘルスチェックでAPIの稼働が
+    // 確認できた場合はopenで再通知されるため、通常画面へ切り替える。
+    checkServiceAvailability((result) => {
       if (cancelled) return;
-      if (isEc2Down(status)) {
+      setServiceHours(result.serviceHours);
+      if (result.status === "closed") {
         setApiDown(true);
         return;
       }
+      setApiDown(false);
       loadApp();
     });
 
@@ -189,6 +176,11 @@ export default function App() {
         <span style={{ fontSize: 11, color: "#9fb3d1", marginLeft: 4 }}>工夫</span>
       </div>
 
+      {/* サービス時間外・API停止中はサイドバーも出さず、全画面でおやすみ画面を表示する
+          （モバイル幅で空のサイドバーだけが表示されるのを防ぐ） */}
+      {apiDown ? (
+      <ClosedScreen serviceHours={serviceHours} />
+      ) : (
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
         {/* サイドバー（モバイル幅では一覧画面のときだけ表示し、幅いっぱいに広げる） */}
         {(!isMobile || mobileView === "list") && (
@@ -264,20 +256,7 @@ export default function App() {
               ← 一覧に戻る
             </button>
           )}
-          {apiDown ? (
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 20 }}>
-              <div style={{ fontSize: 52, lineHeight: 1 }}>🐱💤</div>
-              <div style={{ fontWeight: 700, fontSize: 17, color: "#333" }}>ただいまサービス時間外です</div>
-              <div style={{ fontSize: 13, color: "#888", textAlign: "center", lineHeight: 1.8 }}>
-                kufu:SQL はおやすみ中です。<br />
-                サービス時間内にまたお越しください。
-              </div>
-              <button onClick={() => location.reload()}
-                style={{ marginTop: 8, background: C.primary, color: "#fff", border: "none", borderRadius: 6, padding: "7px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
-                再読み込み
-              </button>
-            </div>
-          ) : !detail ? (
+          {!detail ? (
             <ScenarioIntro onStart={() => { if (problems.length > 0) setSelected(problems[0].id); }} />
           ) : (
             <>
@@ -325,6 +304,40 @@ export default function App() {
         </div>
         )}
       </div>
+      )}
+    </div>
+  );
+}
+
+// サービス時間外・API停止中に表示するおやすみ画面。
+// serviceHoursが取得できている場合のみサービス時間と注記を表示する（取得失敗時は従来の文言のみ）。
+function ClosedScreen({ serviceHours }: { serviceHours: ServiceHours | null }) {
+  // "08:00" → "8:00" のように先頭のゼロを落として表示する
+  const fmtTime = (t: string) => t.replace(/^0/, "");
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, padding: 20 }}>
+      <div style={{ fontSize: 52, lineHeight: 1 }}>🐱💤</div>
+      <div style={{ fontWeight: 700, fontSize: 17, color: "#333" }}>ただいまサービス時間外です</div>
+      <div style={{ fontSize: 13, color: "#888", textAlign: "center", lineHeight: 1.8 }}>
+        kufu:SQL はおやすみ中です。<br />
+        サービス時間内にまたお越しください。
+      </div>
+      {serviceHours && (
+        <div style={{ fontSize: 13, color: "#555", textAlign: "center", lineHeight: 1.8 }}>
+          サービス時間：{fmtTime(serviceHours.start)}〜{fmtTime(serviceHours.end)}
+          （{serviceHours.timezone === "Asia/Tokyo" ? "日本時間" : serviceHours.timezone}）
+          {serviceHours.note && (
+            <>
+              <br />
+              <span style={{ fontSize: 11, color: "#999" }}>※{serviceHours.note}</span>
+            </>
+          )}
+        </div>
+      )}
+      <button onClick={() => location.reload()}
+        style={{ marginTop: 8, background: C.primary, color: "#fff", border: "none", borderRadius: 6, padding: "7px 18px", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+        再読み込み
+      </button>
     </div>
   );
 }
