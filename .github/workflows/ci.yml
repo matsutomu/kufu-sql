@@ -60,6 +60,11 @@ jobs:
           aws s3 sync frontend/dist/ s3://${{ secrets.S3_BUCKET_NAME }}/ --delete \
             --exclude "status.json" --exclude "maintenance.html" --exclude "_deploy/*"
 
+          # service-hours.jsonはデフォルトビヘイビア（CachingOptimized）で配信されるため、
+          # 時間変更が1日キャッシュされないようCache-Controlを短め（300秒）に設定して上書きする
+          aws s3 cp frontend/dist/service-hours.json "s3://${{ secrets.S3_BUCKET_NAME }}/service-hours.json" \
+            --cache-control "max-age=300" --content-type "application/json"
+
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation \
