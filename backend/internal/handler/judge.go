@@ -48,6 +48,11 @@ func (h *JudgeHandler) Judge(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.AnswerMode != "" && req.AnswerMode != "pc" && req.AnswerMode != "mobile" {
+		http.Error(w, "invalid answer_mode", http.StatusBadRequest)
+		return
+	}
+
 	detail, err := h.repo.GetProblemDetail(req.ProblemID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -62,7 +67,7 @@ func (h *JudgeHandler) Judge(w http.ResponseWriter, r *http.Request) {
 	res := h.usecase.Judge(req, detail.Expected.ResultJSON, detail.Problem.Hint)
 
 	if req.SessionID != "" {
-		if err := h.progressRepo.UpsertProgress(req.SessionID, req.ProblemID, res.IsCorrect); err != nil {
+		if err := h.progressRepo.UpsertProgress(req.SessionID, req.ProblemID, res.IsCorrect, req.AnswerMode); err != nil {
 			log.Printf("UpsertProgress error: %v", err)
 		}
 	}

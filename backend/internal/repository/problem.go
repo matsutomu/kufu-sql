@@ -18,7 +18,7 @@ func NewProblemRepository(db *sql.DB) *ProblemRepository {
 
 func (r *ProblemRepository) GetProblems() ([]domain.Problem, error) {
 	rows, err := r.db.Query(`
-		SELECT id, category_id, title, description, difficulty, hint, sort_order, created_at
+		SELECT id, category_id, title, description, difficulty, hint, sort_order, created_at, sql_template, blanks
 		FROM problems ORDER BY category_id, sort_order`)
 	if err != nil {
 		return nil, fmt.Errorf("GetProblems: %w", err)
@@ -29,7 +29,7 @@ func (r *ProblemRepository) GetProblems() ([]domain.Problem, error) {
 	for rows.Next() {
 		var p domain.Problem
 		if err := rows.Scan(&p.ID, &p.CategoryID, &p.Title, &p.Description,
-			&p.Difficulty, &p.Hint, &p.SortOrder, &p.CreatedAt); err != nil {
+			&p.Difficulty, &p.Hint, &p.SortOrder, &p.CreatedAt, &p.SqlTemplate, &p.Blanks); err != nil {
 			return nil, fmt.Errorf("GetProblems scan: %w", err)
 		}
 		problems = append(problems, p)
@@ -41,11 +41,11 @@ func (r *ProblemRepository) GetProblemDetail(id int) (*domain.ProblemDetail, err
 	var detail domain.ProblemDetail
 
 	err := r.db.QueryRow(`
-		SELECT id, category_id, title, description, difficulty, hint, sort_order, created_at
+		SELECT id, category_id, title, description, difficulty, hint, sort_order, created_at, sql_template, blanks
 		FROM problems WHERE id = $1`, id).Scan(
 		&detail.Problem.ID, &detail.Problem.CategoryID, &detail.Problem.Title,
 		&detail.Problem.Description, &detail.Problem.Difficulty, &detail.Problem.Hint,
-		&detail.Problem.SortOrder, &detail.Problem.CreatedAt)
+		&detail.Problem.SortOrder, &detail.Problem.CreatedAt, &detail.Problem.SqlTemplate, &detail.Problem.Blanks)
 	if err != nil {
 		return nil, fmt.Errorf("GetProblemDetail: %w", err)
 	}

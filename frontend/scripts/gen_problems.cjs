@@ -859,6 +859,87 @@ ORDER BY mrr DESC`);
 const esc = (s) => String(s).replace(/'/g, "''");
 
 // ---------------------------------------------------------------
+// モバイル穴埋めモード（SQL基礎10問・集計10問・JOIN 2テーブル結合のみが対象）
+// answer_sql（p.sql）の予約語・関数の括弧を {kwN}/{pN} プレースホルダーに置き換えて
+// sql_template を生成し、各プレースホルダーの正解・ダミー選択肢を blanks に持たせる。
+// ---------------------------------------------------------------
+const KW_OPTIONS = {
+  SELECT: ["SELECT", "INSERT", "UPDATE"],
+  DISTINCT: ["DISTINCT", "ALL", "UNIQUE"],
+  FROM: ["FROM", "WHERE", "JOIN"],
+  WHERE: ["WHERE", "HAVING", "AND"],
+  "GROUP BY": ["GROUP BY", "ORDER BY", "HAVING"],
+  HAVING: ["HAVING", "WHERE", "AND"],
+  "ORDER BY": ["ORDER BY", "GROUP BY", "WHERE"],
+  ASC: ["ASC", "DESC", "LIMIT"],
+  DESC: ["DESC", "ASC", "LIMIT"],
+  LIMIT: ["LIMIT", "OFFSET", "TOP"],
+  AND: ["AND", "OR", "WHERE"],
+  LIKE: ["LIKE", "=", "IN"],
+  "INNER JOIN": ["INNER JOIN", "LEFT JOIN", "WHERE"],
+  "LEFT JOIN": ["LEFT JOIN", "INNER JOIN", "WHERE"],
+  ON: ["ON", "WHERE", "AND"],
+  "IS NULL": ["IS NULL", "= NULL", "IS NOT NULL"],
+};
+
+// keywords: sql内に出現する順番どおりのキーワード配列（同じ語が複数回出るなら複数回書く）
+// parenPairs: 集約関数呼び出し（COUNT(*) 等）の括弧ペアの個数（出現順に自動でペアリングする）
+function buildMobile(sql, keywords, parenPairs = 0) {
+  let template = sql;
+  const blanks = {};
+  keywords.forEach((word, i) => {
+    const id = `kw${i + 1}`;
+    if (!template.includes(word)) throw new Error(`buildMobile: "${word}" が見つかりません`);
+    template = template.replace(word, `{${id}}`);
+    blanks[id] = { type: "keyword", correct: word, options: KW_OPTIONS[word] };
+  });
+  for (let i = 0; i < parenPairs; i++) {
+    const openId = `p${i * 2 + 1}`;
+    const closeId = `p${i * 2 + 2}`;
+    template = template.replace("(", `{${openId}}`).replace(")", `{${closeId}}`);
+    blanks[openId] = { type: "paren", correct: "(", options: ["(", "[", "{"] };
+    blanks[closeId] = { type: "paren", correct: ")", options: [")", "]", "}"] };
+  }
+  return { sql_template: template, blanks };
+}
+
+// answer_sql から blanks の correct 値でプレースホルダーを埋め戻し、元のSQLと一致するか検証する
+function reconstructMobile(sqlTemplate, blanks) {
+  return sqlTemplate.replace(/\{(\w+)\}/g, (_, id) => blanks[id].correct);
+}
+
+const MOBILE_SPECS = {
+  1: { keywords: ["SELECT", "FROM"] },
+  2: { keywords: ["SELECT", "FROM"] },
+  3: { keywords: ["SELECT", "FROM", "WHERE"] },
+  4: { keywords: ["SELECT", "FROM", "WHERE"] },
+  5: { keywords: ["SELECT", "FROM", "WHERE", "LIKE", "ORDER BY"] },
+  6: { keywords: ["SELECT", "FROM", "ORDER BY", "DESC"] },
+  7: { keywords: ["SELECT", "FROM", "ORDER BY", "ASC"] },
+  8: { keywords: ["SELECT", "FROM", "ORDER BY", "DESC", "LIMIT"] },
+  9: { keywords: ["SELECT", "FROM", "WHERE", "AND", "ORDER BY"] },
+  10: { keywords: ["SELECT", "FROM", "WHERE", "ORDER BY", "ASC", "LIMIT"] },
+  11: { keywords: ["SELECT", "FROM"], parenPairs: 1 },
+  12: { keywords: ["SELECT", "FROM", "WHERE"], parenPairs: 1 },
+  13: { keywords: ["SELECT", "FROM", "WHERE"], parenPairs: 1 },
+  14: { keywords: ["SELECT", "FROM"], parenPairs: 1 },
+  15: { keywords: ["SELECT", "FROM"], parenPairs: 2 },
+  16: { keywords: ["SELECT", "FROM", "GROUP BY", "ORDER BY"], parenPairs: 1 },
+  17: { keywords: ["SELECT", "FROM", "GROUP BY", "ORDER BY"], parenPairs: 1 },
+  18: { keywords: ["SELECT", "FROM", "GROUP BY", "ORDER BY"], parenPairs: 1 },
+  19: { keywords: ["SELECT", "FROM", "GROUP BY", "HAVING", "ORDER BY"], parenPairs: 2 },
+  20: { keywords: ["SELECT", "DISTINCT", "FROM"], parenPairs: 1 },
+  21: { keywords: ["SELECT", "FROM", "INNER JOIN", "ON", "ORDER BY"] },
+  22: { keywords: ["SELECT", "FROM", "INNER JOIN", "ON", "ORDER BY"] },
+  25: { keywords: ["SELECT", "FROM", "LEFT JOIN", "ON", "WHERE", "IS NULL", "ORDER BY"] },
+  26: { keywords: ["SELECT", "FROM", "LEFT JOIN", "ON", "GROUP BY", "ORDER BY"], parenPairs: 1 },
+  27: { keywords: ["SELECT", "FROM", "INNER JOIN", "ON", "ORDER BY", "DESC", "LIMIT"] },
+  28: { keywords: ["SELECT", "FROM", "INNER JOIN", "ON", "GROUP BY", "ORDER BY", "DESC"], parenPairs: 1 },
+  32: { keywords: ["SELECT", "FROM", "LEFT JOIN", "ON", "WHERE", "IS NULL", "ORDER BY"] },
+  35: { keywords: ["SELECT", "FROM", "LEFT JOIN", "ON", "AND", "GROUP BY", "ORDER BY", "DESC"], parenPairs: 1 },
+};
+
+// ---------------------------------------------------------------
 // 生成後の検証（問題があっても警告表示のみで、生成自体は失敗させない）
 // ---------------------------------------------------------------
 
@@ -963,6 +1044,7 @@ async function main() {
 
   const sortCounters = {};
   const generated = []; // 検証用に生成結果を保持
+  const mobileUpdates = []; // 004（本番向け非破壊マイグレーション）用に収集
   let fail = 0;
   for (const p of P) {
     const ddl = p.tables.map((t) => DDL[t]).join("\n\n");
@@ -995,9 +1077,23 @@ async function main() {
     const resultJson = JSON.stringify(rows);
     generated.push({ id: p.id, cat: p.cat, diff: p.diff, hint: p.hint, sql: p.sql, resultJson });
 
+    let sqlTemplateVal = "NULL";
+    let blanksVal = "NULL";
+    const mobileSpec = MOBILE_SPECS[p.id];
+    if (mobileSpec) {
+      const mobile = buildMobile(p.sql, mobileSpec.keywords, mobileSpec.parenPairs ?? 0);
+      if (reconstructMobile(mobile.sql_template, mobile.blanks) !== p.sql) {
+        console.error(`❌ Lv.${p.id} ${p.title}: sql_templateの埋め戻しがanswer_sqlと一致しません`);
+        fail++;
+      }
+      sqlTemplateVal = `'${esc(mobile.sql_template)}'`;
+      blanksVal = `'${esc(JSON.stringify(mobile.blanks))}'`;
+      mobileUpdates.push({ id: p.id, title: p.title, sqlTemplateVal, blanksVal });
+    }
+
     out.push(`-- ${p.title}`);
-    out.push(`INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order) VALUES`);
-    out.push(`  (${p.id}, ${p.cat}, '${esc(p.title)}', '${esc(p.desc)}', '${p.diff}', '${esc(p.hint)}', ${sortCounters[p.cat]});`);
+    out.push(`INSERT INTO problems (id, category_id, title, description, difficulty, hint, sort_order, sql_template, blanks) VALUES`);
+    out.push(`  (${p.id}, ${p.cat}, '${esc(p.title)}', '${esc(p.desc)}', '${p.diff}', '${esc(p.hint)}', ${sortCounters[p.cat]}, ${sqlTemplateVal}, ${blanksVal});`);
     out.push(`INSERT INTO schemas (problem_id, ddl, seed_data) VALUES`);
     out.push(`  (${p.id}, '${esc(ddl)}', '${esc(seed)}');`);
     out.push(`INSERT INTO expected_results (problem_id, answer_sql, result_json) VALUES`);
@@ -1017,6 +1113,22 @@ async function main() {
   const dest = path.join(__dirname, "../../backend/migrations/002_kufu_cloud_problems.sql");
   fs.writeFileSync(dest, out.join("\n"));
   console.log(`\n📄 ${dest} を出力しました（${P.length}問）`);
+
+  // 002は progress を含む全テーブルを削除して再投入するため、既存データがある環境（本番）には使えない。
+  // モバイル穴埋め対応分だけを非破壊に反映するUPDATE専用の差分マイグレーションを別途出力する。
+  const updateOut = [
+    `-- モバイル穴埋め回答モード用データの投入（既存行のUPDATEのみ。DELETE/INSERTは行わない）`,
+    `-- 003_add_mobile_answer_support.sql の後に適用する。002の再適用は不要（progressが全削除されるため本番厳禁）。`,
+    ``,
+  ];
+  for (const u of mobileUpdates) {
+    updateOut.push(`-- ${u.title}`);
+    updateOut.push(`UPDATE problems SET sql_template = ${u.sqlTemplateVal}, blanks = ${u.blanksVal} WHERE id = ${u.id};`);
+  }
+  updateOut.push(``);
+  const updateDest = path.join(__dirname, "../../backend/migrations/004_populate_mobile_answers.sql");
+  fs.writeFileSync(updateDest, updateOut.join("\n"));
+  console.log(`📄 ${updateDest} を出力しました（${mobileUpdates.length}問）`);
 
   validateProblems(generated);
 }

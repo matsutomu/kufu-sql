@@ -16,8 +16,8 @@ func TestGetProblems(t *testing.T) {
 	now := time.Now()
 	rows := sqlmock.NewRows([]string{
 		"id", "category_id", "title", "description",
-		"difficulty", "hint", "sort_order", "created_at",
-	}).AddRow(1, 1, "全カラムを取得する", "SELECT文の基本を学ぶ", "easy", "SELECT * を使います", 1, now)
+		"difficulty", "hint", "sort_order", "created_at", "sql_template", "blanks",
+	}).AddRow(1, 1, "全カラムを取得する", "SELECT文の基本を学ぶ", "easy", "SELECT * を使います", 1, now, nil, nil)
 
 	mock.ExpectQuery("SELECT id, category_id").WillReturnRows(rows)
 
@@ -40,8 +40,8 @@ func TestGetProblemDetail(t *testing.T) {
 	mock.ExpectQuery("SELECT id, category_id").WillReturnRows(
 		sqlmock.NewRows([]string{
 			"id", "category_id", "title", "description",
-			"difficulty", "hint", "sort_order", "created_at",
-		}).AddRow(1, 1, "全カラムを取得する", "SELECT文の基本", "easy", "ヒント", 1, now),
+			"difficulty", "hint", "sort_order", "created_at", "sql_template", "blanks",
+		}).AddRow(1, 1, "全カラムを取得する", "SELECT文の基本", "easy", "ヒント", 1, now, nil, nil),
 	)
 
 	mock.ExpectQuery("SELECT id, problem_id, ddl").WillReturnRows(

@@ -19,6 +19,9 @@ type Problem struct {
 	Hint        string    `json:"hint"`
 	SortOrder   int       `json:"sort_order"`
 	CreatedAt   time.Time `json:"created_at"`
+	// SqlTemplate/Blanks はモバイル穴埋めモード対応済みの問題のみ非nil（Blanksはblank定義のJSON文字列）
+	SqlTemplate *string `json:"sql_template,omitempty"`
+	Blanks      *string `json:"blanks,omitempty"`
 }
 
 type Schema struct {
@@ -36,13 +39,14 @@ type ExpectedResult struct {
 }
 
 type Progress struct {
-	ID        int        `json:"id"`
-	SessionID string     `json:"session_id"`
-	ProblemID int        `json:"problem_id"`
-	IsCorrect bool       `json:"is_correct"`
-	Attempts  int        `json:"attempts"`
-	SolvedAt  *time.Time `json:"solved_at"`
-	CreatedAt time.Time  `json:"created_at"`
+	ID         int        `json:"id"`
+	SessionID  string     `json:"session_id"`
+	ProblemID  int        `json:"problem_id"`
+	IsCorrect  bool       `json:"is_correct"`
+	Attempts   int        `json:"attempts"`
+	SolvedAt   *time.Time `json:"solved_at"`
+	CreatedAt  time.Time  `json:"created_at"`
+	AnswerMode *string    `json:"answer_mode,omitempty"`
 }
 
 type ProblemDetail struct {

@@ -12,6 +12,8 @@ type JudgeRequest struct {
 	ProblemID  int              `json:"problem_id"`
 	SessionID  string           `json:"session_id"`
 	ResultRows []map[string]any `json:"result_rows"`
+	// AnswerMode は "pc" または "mobile"。どちらのUIで回答したかのログ用（採点には使わない）
+	AnswerMode string `json:"answer_mode,omitempty"`
 }
 
 type JudgeResponse struct {
